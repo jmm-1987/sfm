@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard SFM Logística</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Arial', sans-serif; }
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Menú superior -->
+    <header class="bg-blue-600 p-2 flex justify-between items-center shadow-lg">
+        <div class="flex items-center">
+            <img src="{{ url_for('static', filename='img/logosfm.jpg') }}" alt="Logo" class="w-32 h-20">
+        </div>
+        <div class="flex items-center space-x-4">
+            <a href="vehiculos" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Vehículos</a>
+            <a href="clientes" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Clientes</a>
+            <a href="produccion" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Producción</a>
+            <a href="facturacion" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Facturar</a>
+            <a href="repartos" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Repartos</a>
+            <a href="importar" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Importar</a>
+            <button id="logoutBtn" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- Contenedor principal -->
+    <div class="flex flex-col mt-6 mx-6">
+        <h2 class="text-2xl font-semibold text-blue-700 mb-6">Facturación</h2>
+
+        <!-- Contenedor de filtros -->
+        <div class="flex flex-wrap gap-4 mb-4">
+            <input type="text" id="filterId" class="p-2 border rounded-lg" placeholder="Filtrar por ID">
+            <input type="text" id="filterFecha" class="p-2 border rounded-lg" placeholder="Filtrar por Fecha (dd/mm/aaaa)">
+            <input type="text" id="filterExpedicion" class="p-2 border rounded-lg" placeholder="Filtrar por Expedición">
+            <input type="text" id="filterAgencia" class="p-2 border rounded-lg" placeholder="Filtrar por Agencia">
+            <input type="text" id="filterCliente" class="p-2 border rounded-lg" placeholder="Filtrar por Cliente">
+
+            <div class="flex items-center gap-2">
+                <button onclick="clearFilters()" class="bg-red-500 text-white px-4 py-2 rounded-lg">Limpiar Filtros</button>
+
+            </div>
+        </div>
+
+        <!-- Sumario de expediciones -->
+<div id="summary" class="bg-blue-200 p-4 rounded-lg mb-4 text-blue-900 font-semibold">
+    <p>Expediciones: <span id="totalExpediciones">0</span>&nbsp;&nbsp;&nbsp; Bultos: <span id="totalBultos">0</span> &nbsp;&nbsp;&nbsp; Kg: <span id="totalKg">0</span>&nbsp;&nbsp;&nbsp;Volumen: <span id="totalVolumen">0</span>&nbsp;&nbsp;&nbsp;Kg Conv: <span id="totalKg_conv">0</span></p>
+
+</div>
+
+        <!-- Tabla de Expediciones -->
+        <!-- Tabla de Expediciones -->
+<div class="overflow-x-auto bg-white shadow-lg rounded-xl">
+    <table id="expedicionTable" class="min-w-full table-auto">
+        <thead>
+            <tr class="bg-blue-100 text-blue-700">
+                <th class="px-6 py-4 text-left">ID</th>
+                <th class="px-6 py-4 text-left">Fecha</th>
+                <th class="px-6 py-4 text-left">Expedición</th>
+                <th class="px-6 py-4 text-left">Agencia</th>
+                <th class="px-6 py-4 text-left">Cliente</th>
+                <th class="px-6 py-4 text-left">Remitente</th>
+                <th class="px-6 py-4 text-left">Destinatario</th>
+                <th class="px-6 py-4 text-left">Bultos</th>
+                <th class="px-6 py-4 text-left">Kg</th>
+                <th class="px-6 py-4 text-left">Volumen</th>
+                <th class="px-6 py-4 text-left">Kg Conv</th>
+                <th class="px-6 py-4 text-left">Estado</th>
+                <th class="px-6 py-4 text-left">Entrega</th>
+                <th class="px-6 py-4 text-left">Distr.</th>
+                <th class="px-6 py-4 text-left">Cargo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expedicion in expediciones %}
+            <tr class="bg-gray-100">
+                <td class="px-6 py-4">{{ expedicion.id }}</td>
+                <td class="px-6 py-4">{{ expedicion.fecha.strftime('%d/%m/%Y') }}</td>
+                <td class="px-6 py-4">{{ expedicion.expedicion }}</td>
+                <td class="px-6 py-4">{{ expedicion.agencia_origen }}</td>
+                <td class="px-6 py-4">{{ expedicion.cliente }}</td>
+                <td class="px-6 py-4">{{ expedicion.remitente }}</td>
+                <td class="px-6 py-4">{{ expedicion.destinatario }}</td>
+                <td class="px-6 py-4">{{ expedicion.bultos }}</td>
+                <td class="px-6 py-4">{{ expedicion.kg }}</td>
+                <td class="px-6 py-4">{{ expedicion.volumen }}</td>
+                <td class="px-6 py-4">{{ expedicion.kg_conv }}</td>
+                <td class="px-6 py-4">{{ expedicion.estado }}</td>
+                <td class="px-6 py-4">{{ expedicion.fecha_entrega.strftime('%d/%m/%Y') if expedicion.fecha_entrega else '' }}</td>
+                <td class="px-6 py-4">{{ expedicion.ingreso_distribucion }}</td>
+                <td class="px-6 py-4">{{ expedicion.ingreso_cargo_adicional }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="15" class="text-center py-4 text-gray-500">No hay expediciones registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+    </div>
+
+<script>
+    function updateSummary() {
+        let totalExpediciones = 0;
+        let totalBultos = 0;
+        let totalKg = 0;
+        let totalVolumen = 0;
+        let totalKg_conv = 0;
+
+        const rows = document.querySelectorAll('#expedicionTable tbody tr');
+
+        rows.forEach(row => {
+            if (row.style.display !== 'none') {
+                totalExpediciones++;
+                totalBultos += parseInt(row.cells[7].textContent) || 0;
+                totalKg += parseFloat(row.cells[8].textContent) || 0;
+                totalVolumen += parseFloat(row.cells[9].textContent) || 0;
+                totalKg_conv += parseFloat(row.cells[10].textContent) || 0;
+            }
+        });
+
+        document.getElementById('totalExpediciones').textContent = totalExpediciones;
+        document.getElementById('totalBultos').textContent = totalBultos;
+        document.getElementById('totalKg').textContent = totalKg.toFixed(0);
+        document.getElementById('totalVolumen').textContent = totalVolumen.toFixed(2);
+        document.getElementById('totalKg_conv').textContent = totalKg_conv.toFixed(0);
+    }
+
+    function filterTable() {
+        const filterId = document.getElementById('filterId').value.toLowerCase();
+        const filterFecha = document.getElementById('filterFecha').value.toLowerCase();
+        const filterExpedicion = document.getElementById('filterExpedicion').value.toLowerCase();
+        const filterAgencia = document.getElementById('filterAgencia').value.toLowerCase();
+        const filterCliente = document.getElementById('filterCliente').value.toLowerCase();
+
+        const rows = document.querySelectorAll('#expedicionTable tbody tr');
+
+        rows.forEach(row => {
+            const id = row.cells[0].textContent.toLowerCase();
+            const fecha = row.cells[1].textContent.toLowerCase();
+            const expedicion = row.cells[2].textContent.toLowerCase();
+            const agencia = row.cells[3].textContent.toLowerCase();
+            const cliente = row.cells[4].textContent.toLowerCase();
+
+            if (id.includes(filterId) &&
+                fecha.includes(filterFecha) &&
+                expedicion.includes(filterExpedicion) &&
+                agencia.includes(filterAgencia) &&
+                cliente.includes(filterCliente)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        updateSummary();
+    }
+
+    document.querySelectorAll('.p-2.border').forEach(input => {
+        input.addEventListener('input', filterTable);
+    });
+
+    function clearFilters() {
+        document.getElementById('filterId').value = "";
+        document.getElementById('filterFecha').value = "";
+        document.getElementById('filterExpedicion').value = "";
+        document.getElementById('filterAgencia').value = "";
+        document.getElementById('filterCliente').value = "";
+        filterTable();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        updateSummary();
+    });
+</script>
+
+</body>
+</html>

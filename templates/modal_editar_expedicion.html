@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+    <title>Editar Expedición</title>
+</head>
+<body>
+<div id="expedicionEditModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 {% if not expedicion %}hidden{% endif %}">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-7xl mx-4 p-8 max-h-[90vh] overflow-y-auto">
+        <h2 class="text-2xl font-bold mb-6 text-blue-700 text-center">Editar Expedición: {{ expedicion.expedicion }} Id: ({{ expedicion.id }})</h2>
+
+        <form id="expedicionEditForm" method="POST" action="{{ url_for('editar_expedicion', id=expedicion.id) if expedicion else '#' }}">
+            <input type="hidden" id="editId" name="id" value="{{ expedicion.id if expedicion else '' }}">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Datos Generales -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Datos Generales</h3>
+                    <div class="grid gap-3">
+                        <label class="block">Fecha:
+                            <input type="date" name="fecha" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.fecha.strftime('%Y-%m-%d') if expedicion and expedicion.fecha else '' }}" required>
+                        </label>
+                        <label class="block">Expedición:
+                            <input type="number" name="expedicion" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.expedicion if expedicion else '' }}" required>
+                        </label>
+                        <label class="block">Cliente:
+                            <select name="cliente" class="w-full p-2 border rounded" required>
+                                {% for cliente in clientes %}
+                                    <option value="{{ cliente.alias }}" {% if cliente.alias == expedicion.cliente %} selected {% endif %}>
+                                        {{ cliente.alias }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </label>
+
+                        <!-- Agencias con Alpine.js -->
+                        <div x-data="{ editMode: false }">
+                            <label class="block">Agencia Origen:
+                                <div class="flex items-center">
+                                    <select name="agencia_origen" class="w-full p-2 border rounded" required>
+                                        {% for agencia in agencias %}
+                                            <option value="{{ agencia }}" {% if agencia == expedicion.agencia_origen %} selected {% endif %}>
+                                                {{ agencia }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div x-data="{ editMode: false }">
+                            <label class="block">Agencia Destino:
+                                <div class="flex items-center">
+                                    <select name="agencia_destino" class="w-full p-2 border rounded" required>
+                                        {% for agencia in agencias %}
+                                            <option value="{{ agencia }}" {% if agencia == expedicion.agencia_destino %} selected {% endif %}>
+                                                {{ agencia }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remitente -->
+                <div class="bg-gray-200 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Remitente</h3>
+                    <div class="grid gap-3">
+                        <label class="block">Nombre:
+                            <input type="text" name="remitente" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.remitente if expedicion else '' }}" required>
+                        </label>
+                        <label class="block">Dirección:
+                            <input type="text" name="dir_remitente" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.dir_remitente if expedicion else '' }}">
+                        </label>
+                        <label class="block">Código Postal:
+                            <input type="number" name="cod_postal_remitente" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.cod_postal_remitente if expedicion else '' }}" required>
+                        </label>
+                        <label class="block">Población:
+                            <input type="text" name="poblacion_remitente" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.poblacion_remitente if expedicion else '' }}">
+                        </label>
+                        <label class="block">Provincia:
+                            <input type="text" name="provincia_remitente" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.provincia_remitente if expedicion else '' }}">
+                        </label>
+                        <label class="block">País:
+                            <input type="text" name="pais_remitente" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.pais_remitente if expedicion else '' }}" required>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Destinatario -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Destinatario</h3>
+                    <div class="grid gap-3">
+                        <label class="block">Nombre:
+                            <input type="text" name="destinatario" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.destinatario if expedicion else '' }}" required>
+                        </label>
+                        <label class="block">Dirección:
+                            <input type="text" name="dir_destinatario" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.dir_destinatario if expedicion else '' }}" required>
+                        </label>
+                        <label class="block">Código Postal:
+                            <input type="number" name="cod_postal_destinatario" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.cod_postal_destinatario if expedicion else '' }}" required>
+                        </label>
+                        <label class="block">Población:
+                            <input type="text" name="poblacion_destinatario" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.poblacion_destinatario if expedicion else '' }}" required>
+                        </label>
+                        <label class="block">Provincia:
+                            <input type="text" name="provincia_destinatario" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.provincia_destinatario if expedicion else '' }}" required>
+                        </label>
+                        <label class="block">País:
+                            <input type="text" name="pais_destinatario" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.pais_destinatario if expedicion else '' }}" required>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Detalles de Carga -->
+                <div class="bg-gray-200 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Detalles de Carga</h3>
+                    <div class="grid gap-3">
+                        <label class="block">Bultos:
+                            <input type="number" name="bultos" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.bultos if expedicion else '' }}" required>
+                        </label>
+                        <label class="block">Kg:
+                            <input type="number" name="kg" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.kg if expedicion else '' }}" required>
+                        </label>
+                        <label class="block">Volumen:
+                            <input type="number" step="0.01" name="volumen" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.volumen if expedicion else '' }}">
+                        </label>
+                        <label class="block">Kg Convertidos:
+                            <input type="number" name="kg_conv" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.kg_conv if expedicion else '' }}" required>
+                        </label>
+                        <label class="block">Tipo de Bulto:
+                            <input type="text" name="tipo_bulto" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.tipo_bulto if expedicion else '' }}">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Estado y Fechas -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Estado y Fechas</h3>
+                    <div class="grid gap-3">
+                        <label class="block">Estado:
+                            <input type="text" step="0.01" id="editEstado" name="estado" class="w-full p-2 border rounded"
+                               value="{{ expedicion.estado if expedicion else '' }}">
+                        </label>
+                        <label class="block">Fecha Asignación:
+                            <input type="datetime-local" name="fecha_asignacion" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.fecha_asignacion.strftime('%Y-%m-%dT%H:%M') if expedicion and expedicion.fecha_asignacion else '' }}">
+                        </label>
+                        <label class="block">Fecha Entrega:
+                            <input type="datetime-local" name="fecha_entrega" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.fecha_entrega.strftime('%Y-%m-%dT%H:%M') if expedicion and expedicion.fecha_entrega else '' }}">
+                        </label>
+                        <label class="block">Asignada a:
+                            <input type="text" name="asignada_a" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.asignada_a if expedicion else '' }}">
+                        </label>
+                        <label class="block">Viaje:
+                            <input type="number" name="viaje" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.viaje if expedicion else '' }}">
+                        </label>
+                        <div class="flex items-center mt-2">
+                            <input type="checkbox" name="facturada" class="mr-2"
+                                   {% if expedicion and expedicion.facturada %}checked{% endif %}>
+                            <label>Facturada</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ingresos -->
+                <div class="bg-gray-200 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Ingresos</h3>
+                    <div class="grid gap-3">
+                        <label class="block">Reembolso (€):
+                            <input type="number" step="0.01" name="reembolso" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.reembolso if expedicion else '0.00' }}">
+                        </label>
+                        <label class="block">Ingreso Comisión Reembolso (€):
+                            <input type="number" step="0.01" name="ingreso_com_reembolso" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.ingreso_com_reembolso if expedicion else '0.00' }}">
+                        </label>
+                        <label class="block">Ingreso Distribución (€):
+                            <input type="number" step="0.01" name="ingreso_distribucion" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.ingreso_distribucion if expedicion else '0.00' }}">
+                        </label>
+                        <label class="block">Ingreso Cargo Adicional (€):
+                            <input type="number" step="0.01" name="ingreso_cargo_adicional" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.ingreso_cargo_adicional if expedicion else '0.00' }}">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Costes -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Costes</h3>
+                    <div class="grid gap-3">
+                        <label class="block">Coste Reparto (€):
+                            <input type="number" step="0.01" name="coste_reparto" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.coste_reparto if expedicion else '0.00' }}">
+                        </label>
+                        <label class="block">Coste Arrastre (€):
+                            <input type="number" step="0.01" name="coste_arrastre" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.coste_arrastre if expedicion else '0.00' }}">
+                        </label>
+                        <label class="block">Coste Removido (€):
+                            <input type="number" step="0.01" name="coste_removido" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.coste_removido if expedicion else '0.00' }}">
+                        </label>
+                        <label class="block">Coste Distribución (€):
+                            <input type="number" step="0.01" name="coste_distribucion" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.coste_distribucion if expedicion else '0.00' }}">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-end space-x-4 mt-6">
+                <button type="button" onclick="closeEditModal()" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">Cancelar</button>
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function closeEditModal() {
+    document.getElementById("expedicionEditModal").classList.add("hidden");
+}
+</script>
+
+</body>
+</html>

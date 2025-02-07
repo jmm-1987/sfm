@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+    <title>Editar Expedición</title>
+</head>
+<body>
+<div id="expedicionEditModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 {% if not expedicion %}hidden{% endif %}">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-6xl mx-4 p-8">
+        <h2 class="text-2xl font-bold mb-6 text-blue-700 text-center">Editar Expedición: {{ expedicion.expedicion }} Id: ({{ expedicion.id }}) </h2>
+
+        <form id="expedicionEditForm" method="POST" action="{{ url_for('editar_expedicion', id=expedicion.id) if expedicion else '#' }}">
+            <input type="hidden" id="editId" name="id" value="{{ expedicion.id if expedicion else '' }}">
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Datos Generales -->
+                <div class="bg-gray-100 p-4 rounded-lg col-span-2 md:col-span-1">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Datos Generales</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="block">Fecha:
+                            <input type="date" id="editFecha" name="fecha" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.fecha.strftime('%Y-%m-%d') if expedicion and expedicion.fecha else '' }}" required>
+                        </label>
+                        <label class="block">Expedición:
+                            <input type="number" id="editExpedicion" name="expedicion" class="w-full p-2 border rounded"
+                                   value="{{ expedicion.expedicion if expedicion else '' }}" required>
+                        </label>
+                        <label class="block col-span-2">Cliente:
+                            <select id="editCliente" name="cliente" class="w-full p-2 border rounded" required>
+                            {% for cliente in clientes %}
+                                <option value="{{ cliente.alias }}" {% if cliente.alias == expedicion.cliente %} selected {% endif %}>
+                                {{ cliente.alias }}
+                                </option>
+                            {% endfor %}
+                            </select>
+                        </label>
+
+                        <!-- Agencia Origen con Alpine.js -->
+                        <div class="relative w-full col-span-2" x-data="{ editMode: false }">
+                            <label class="block">Agencia Origen:</label>
+                            <div class="flex items-center border rounded w-full p-2">
+                                <input type="text"
+                                      class="w-full bg-gray-100 cursor-not-allowed"
+                                      x-show="!editMode"
+                                      value="{{ expedicion.agencia_origen }}"
+                                      readonly>
+                                <select name="agencia_origen"
+                                        class="w-full p-2 border rounded"
+                                        x-show="editMode"
+                                        x-ref="agenciaOrigenSelect"
+                                        required>
+                                    {% for agencia in agencias %}
+                                        <option value="{{ agencia }}"
+                                                {% if agencia == expedicion.agencia_origen %} selected {% endif %}>
+                                            {{ agencia }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <button type="button"
+                                        class="ml-2 bg-blue-500 text-white px-2 py-1 rounded text-sm"
+                                        @click="editMode = !editMode;
+                                                $nextTick(() => {
+                                                    if (editMode) $refs.agenciaOrigenSelect.focus();
+                                                })">
+                                    ✏️
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Agencia Destino con Alpine.js -->
+                        <div class="relative w-full col-span-2" x-data="{ editMode: false }">
+                            <label class="block">Agencia Destino:</label>
+                            <div class="flex items-center border rounded w-full p-2">
+                                <input type="text"
+                                       class="w-full bg-gray-100 cursor-not-allowed"
+                                       x-show="!editMode"
+                                       value="{{ expedicion.agencia_destino }}"
+                                       readonly>
+                                <select name="agencia_destino"
+                                        class="w-full p-2 border rounded"
+                                        x-show="editMode"
+                                        x-ref="agenciaDestinoSelect"
+                                        required>
+                                    {% for agencia in agencias %}
+                                        <option value="{{ agencia }}"
+                                                {% if agencia == expedicion.agencia_destino %} selected {% endif %}>
+                                            {{ agencia }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <button type="button"
+                                        class="ml-2 bg-blue-500 text-white px-2 py-1 rounded text-sm"
+                                        @click="editMode = !editMode;
+                                                $nextTick(() => {
+                                                    if (editMode) $refs.agenciaDestinoSelect.focus();
+                                                })">
+                                    ✏️
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remitente -->
+                <div class="bg-gray-200 p-4 rounded-lg col-span-2 md:col-span-1">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Remitente</h3>
+                    <label class="block">Nombre:
+                        <input type="text" id="editRemitente" name="remitente" class="w-full p-2 border rounded"
+                               value="{{ expedicion.remitente if expedicion else '' }}" required>
+                    </label>
+                    <label class="block">Dirección:
+                        <input type="text" id="editDirRemitente" name="dir_remitente" class="w-full p-2 border rounded"
+                               value="{{ expedicion.dir_remitente if expedicion else '' }}">
+                    </label>
+                </div>
+
+                <!-- Destinatario -->
+                <div class="bg-gray-100 p-4 rounded-lg col-span-2 md:col-span-1">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Destinatario</h3>
+                    <label class="block">Nombre:
+                        <input type="text" id="editDestinatario" name="destinatario" class="w-full p-2 border rounded"
+                               value="{{ expedicion.destinatario if expedicion else '' }}" required>
+                    </label>
+                    <label class="block">Dirección:
+                        <input type="text" id="editDirDestinatario" name="dir_destinatario" class="w-full p-2 border rounded"
+                               value="{{ expedicion.dir_destinatario if expedicion else '' }}"/>
+                    </label>
+                </div>
+
+                <!-- Carga y Costos -->
+                <div class="bg-gray-200 p-4 rounded-lg col-span-2 md:col-span-1">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Carga y Costos</h3>
+                    <label class="block">Bultos:
+                        <input type="number" id="editBultos" name="bultos" class="w-full p-2 border rounded"
+                               value="{{ expedicion.bultos if expedicion else '' }}" required>
+                    </label>
+                    <label class="block">Kg:
+                        <input type="number" id="editKg" name="kg" class="w-full p-2 border rounded"
+                               value="{{ expedicion.kg if expedicion else '' }}" required>
+                    </label>
+                    <label class="block">Reembolso (€):
+                        <input type="number" step="0.01" id="editReembolso" name="reembolso" class="w-full p-2 border rounded"
+                               value="{{ expedicion.reembolso if expedicion else '' }}">
+                    </label>
+                    <label class="block">Estado:
+                        <input type="text" step="0.01" id="editEstado" name="estado" class="w-full p-2 border rounded"
+                               value="{{ expedicion.estado if expedicion else '' }}">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-end space-x-4 mt-6">
+                <button type="button" onclick="closeEditModal()" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">Cancelar</button>
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function closeEditModal() {
+    document.getElementById("expedicionEditModal").classList.add("hidden");
+}
+</script>
+
+</body>
+</html>

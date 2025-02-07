@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Nueva Expedición</title>
+</head>
+<body>
+<div id="expedicionModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-6xl mx-4 p-8">
+        <h2 class="text-2xl font-bold mb-6 text-blue-700 text-center">Nueva Expedición</h2>
+
+        <form id="expedicionForm" method="POST" action="{{ url_for('grabar_expedicion') }}">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Datos Generales -->
+                <div class="bg-gray-100 p-4 rounded-lg col-span-2 md:col-span-1">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Datos Generales</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">Fecha</label>
+                            <input type="date" name="fecha" id="fecha" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">Expedición</label>
+                            <input type="number" name="expedicion" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div class="col-span-2">
+    <label class="block text-sm mb-1">Cliente</label>
+    <select name="cliente" class="w-full p-2 border rounded" required>
+        <!-- Opción por defecto vacía -->
+        <option value="" disabled selected>Selecciona un cliente</option>
+
+        {% for cliente in clientes %}
+            <option value="{{ cliente.alias }}">{{ cliente.alias }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">Agencia origen</label>
+                            <select name="agencia_origen" class="w-full p-2 border rounded" required>
+                                <option value="PALLEX">SFM</option>
+                                 <option value="PALLEX">PALLEX</option>
+                                 <option value="REDPALET">REDPALET</option>
+                                 <option value="SEYTRA">SEYTRA</option>
+                                <option value="TYD">TYD</option>
+                                <option value="ELECTRODOMESTICOS">ELECTRODOMESTICOS</option>
+                                <option value="TEDi">TEDi</option>
+                            </select>
+                        </div>
+
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">Agencia destino</label>
+                            <select name="agencia_destino" class="w-full p-2 border rounded" required>
+                                <option value="PALLEX">SFM</option>
+                                 <option value="PALLEX">PALLEX</option>
+                                 <option value="REDPALET">REDPALET</option>
+                                 <option value="SEYTRA">SEYTRA</option>
+                                <option value="TYD">TYD</option>
+                                <option value="ELECTRODOMESTICOS">ELECTRODOMESTICOS</option>
+                                <option value="TEDi">TEDi</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remitente -->
+                <div class="bg-gray-200 p-4 rounded-lg col-span-2 md:col-span-1">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Remitente</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">Nombre</label>
+                            <input type="text" name="remitente" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">Dirección</label>
+                            <input type="text" name="dir_remitente" class="w-full p-2 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">Cód. Postal</label>
+                            <input type="text" name="cod_postal_remitente" class="w-full p-2 border rounded" required pattern="^\d{5}$" title="El código postal debe contener exactamente 5 dígitos" inputmode="numeric">
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">Población</label>
+                            <input type="text" name="poblacion_remitente" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">Provincia</label>
+                            <input type="text" name="provincia_remitente" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">País</label>
+                            <select name="pais_remitente" class="w-full p-2 border rounded" required>
+                                <option value="ESP" selected>España</option>
+                                <option value="PT">Portugal</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Destinatario -->
+                <div class="bg-gray-100 p-4 rounded-lg col-span-2 md:col-span-1">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Destinatario</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">Nombre</label>
+                            <input type="text" name="destinatario" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">Dirección</label>
+                            <input type="text" name="dir_destinatario" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">Cód. Postal</label>
+                            <input type="text" name="cod_postal_destinatario" class="w-full p-2 border rounded" required pattern="^\d{5}$" title="El código postal debe contener 5 números" inputmode="numeric">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm mb-1">Población</label>
+                            <input type="text" name="poblacion_destinatario" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">Provincia</label>
+                            <input type="text" name="provincia_destinatario" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">País</label>
+                            <select name="pais_destinatario" class="w-full p-2 border rounded" required>
+                                <option value="ESP" selected>España</option>
+                                <option value="PT">Portugal</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Carga y Costos -->
+                <div class="bg-gray-200 p-4 rounded-lg col-span-2 md:col-span-1">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Carga y Costos</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm mb-1">Bultos</label>
+                            <input type="number" name="bultos" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">Kg</label>
+                            <input type="number" step="0.01" name="kg" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">Volumen</label>
+                            <input type="number" step="0.01" name="volumen" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">Kg Convertidos</label>
+                            <input type="number" name="kg_conv" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">Tipo bulto</label>
+                            <input type="text" name="tipo_bulto" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">Reembolso (€)</label>
+                            <input type="number" step="0.01" name="reembolso" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm mb-1">Estado</label>
+                            <select name="estado" class="w-full p-2 border rounded">
+                                <option value="almacen">Almacén</option>
+                                <option value="en reparto">En Reparto</option>
+                                <option value="entregado">Entregado</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-end space-x-4 mt-6">
+                <button type="button" onclick="closeModal()" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">Cancelar</button>
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+        let hoy = new Date().toISOString().split('T')[0]; // Obtiene la fecha en formato YYYY-MM-DD
+        document.getElementById("fecha").value = hoy;
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard SFM Logística</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Estilo para las celdas de la tabla */
+        table th,
+        table td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Modal */
+        #logoutModal {
+            display: none;
+        }
+
+        #logoutModal.show {
+            display: flex;
+        }
+
+        .filter-container {
+            margin-bottom: 20px;
+        }
+
+        .filter-container input {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+
+    <!-- Menú superior -->
+    <header class="bg-blue-600 p-4 flex justify-between items-center shadow-lg">
+        <div class="flex items-center">
+            <!-- Logo a la izquierda -->
+            <img src="https://via.placeholder.com/150" alt="Logo SFM" class="w-16 h-16">
+        </div>
+
+        <div class="flex items-center space-x-6">
+            <!-- Otros botones en el menú superior -->
+            <button class="text-white font-semibold hover:bg-blue-500 px-4 py-2 rounded-lg focus:outline-none">Dashboard</button>
+            <button class="text-white font-semibold hover:bg-blue-500 px-4 py-2 rounded-lg focus:outline-none">Perfil</button>
+            <!-- Botón de cerrar sesión -->
+            <button id="logoutBtn" class="text-white font-semibold hover:bg-blue-500 px-4 py-2 rounded-lg focus:outline-none">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- Contenedor principal -->
+    <div class="flex flex-col mt-6 mx-6">
+        <!-- Título del Dashboard -->
+        <h2 class="text-2xl font-semibold text-blue-700 mb-6">Expediciones</h2>
+
+        <!-- Contenedor para los filtros -->
+        <div class="filter-container flex space-x-4">
+            <input type="text" id="filterId" class="filter-input" placeholder="Filtrar por ID">
+            <input type="text" id="filterFecha" class="filter-input" placeholder="Filtrar por Fecha">
+            <input type="text" id="filterExpedicion" class="filter-input" placeholder="Filtrar por Expedición">
+            <input type="text" id="filterAgencia" class="filter-input" placeholder="Filtrar por Agencia">
+            <input type="text" id="filterCliente" class="filter-input" placeholder="Filtrar por Cliente">
+        </div>
+
+        <!-- Tabla (simulando un Excel) -->
+        <div class="overflow-x-auto bg-white shadow-lg rounded-xl">
+            <table id="expedicionTable" class="min-w-full table-auto">
+                <thead>
+                    <tr class="bg-blue-100 text-blue-700">
+                        <th class="px-6 py-4 text-left">ID</th>
+                        <th class="px-6 py-4 text-left">Fecha</th>
+                        <th class="px-6 py-4 text-left">Expedición</th>
+                        <th class="px-6 py-4 text-left">Agencia</th>
+                        <th class="px-6 py-4 text-left">Cliente</th>
+                        <th class="px-6 py-4 text-left">Remitente</th>
+                        <th class="px-6 py-4 text-left">Destinatario</th>
+                        <th class="px-6 py-4 text-left">Bultos</th>
+                        <th class="px-6 py-4 text-left">Kg</th>
+                        <th class="px-6 py-4 text-left">Volumen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="bg-gray-100">
+                        <td class="px-6 py-4">1</td>
+                        <td class="px-6 py-4">2025-01-28</td>
+                        <td class="px-6 py-4">EX1234</td>
+                        <td class="px-6 py-4">Agencia A</td>
+                        <td class="px-6 py-4">Cliente X</td>
+                        <td class="px-6 py-4">Remitente Y</td>
+                        <td class="px-6 py-4">Destinatario Z</td>
+                        <td class="px-6 py-4">5</td>
+                        <td class="px-6 py-4">10</td>
+                        <td class="px-6 py-4">100</td>
+                    </tr>
+                    <tr class="bg-gray-100">
+                        <td class="px-6 py-4">2</td>
+                        <td class="px-6 py-4">2025-01-29</td>
+                        <td class="px-6 py-4">EX5678</td>
+                        <td class="px-6 py-4">Agencia B</td>
+                        <td class="px-6 py-4">Cliente Y</td>
+                        <td class="px-6 py-4">Remitente X</td>
+                        <td class="px-6 py-4">Destinatario W</td>
+                        <td class="px-6 py-4">10</td>
+                        <td class="px-6 py-4">20</td>
+                        <td class="px-6 py-4">200</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación de Cerrar Sesión -->
+    <div id="logoutModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">¿Estás seguro de que quieres cerrar sesión?</h3>
+            <div class="flex justify-end space-x-4">
+                <button id="cancelLogout" class="bg-gray-300 px-4 py-2 rounded-lg">Cancelar</button>
+                <button id="confirmLogout" class="bg-red-500 text-white px-4 py-2 rounded-lg">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de interactividad -->
+    <script>
+        // Filtrado de la tabla
+        function filterTable() {
+            let filterId = document.getElementById('filterId').value.toLowerCase();
+            let filterFecha = document.getElementById('filterFecha').value.toLowerCase();
+            let filterExpedicion = document.getElementById('filterExpedicion').value.toLowerCase();
+            let filterAgencia = document.getElementById('filterAgencia').value.toLowerCase();
+            let filterCliente = document.getElementById('filterCliente').value.toLowerCase();
+
+            let rows = document.querySelectorAll('#expedicionTable tbody tr');
+
+            rows.forEach(row => {
+                let id = row.cells[0].textContent.toLowerCase();
+                let fecha = row.cells[1].textContent.toLowerCase();
+                let expedicion = row.cells[2].textContent.toLowerCase();
+                let agencia = row.cells[3].textContent.toLowerCase();
+                let cliente = row.cells[4].textContent.toLowerCase();
+
+                if (id.includes(filterId) &&
+                    fecha.includes(filterFecha) &&
+                    expedicion.includes(filterExpedicion) &&
+                    agencia.includes(filterAgencia) &&
+                    cliente.includes(filterCliente)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Agregar evento a los campos de filtro
+        document.querySelectorAll('.filter-input').forEach(input => {
+            input.addEventListener('input', filterTable);
+        });
+
+        // Mostrar modal de cerrar sesión
+        document.getElementById("logoutBtn").addEventListener("click", function () {
+            document.getElementById("logoutModal").classList.add("show");
+        });
+
+        // Cancelar acción de cerrar sesión
+        document.getElementById("cancelLogout").addEventListener("click", function () {
+            document.getElementById("logoutModal").classList.remove("show");
+        });
+
+        // Confirmar y cerrar sesión
+        document.getElementById("confirmLogout").addEventListener("click", function () {
+            alert("Sesión cerrada");
+            // Redirigir al usuario a la página de login
+            window.location.href = "/login"; // Asegúrate de actualizar la URL al correcto
+        });
+    </script>
+</body>
+
+</html>
