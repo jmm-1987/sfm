@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard SFM Logística</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Arial', sans-serif; }
@@ -53,8 +54,53 @@
                         Crear Expedición
                     </span>
                 </button>
+                <button onclick="openAssignModal()" class="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 relative group">
+    🚛
+    <span class="absolute left-1/2 transform -translate-x-1/2 -top-8 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+        Asignar Reparto
+    </span>
+</button>
             </div>
         </div>
+     <!-- Formulario para asignar reparto dentro de un div que mantiene el mismo nombre -->
+<div id="assignFields" class="hidden mt-4 flex gap-4">
+    <!-- Formulario para asignar reparto -->
+    <form id="asignarForm" method="POST" action="{{ url_for('asignar_expedicion') }}" class="w-full flex gap-4">
+        <!-- Selección de matrícula -->
+        <div class="flex-1">
+            <label class="block text-gray-600">Selecciona una matrícula:</label>
+            <select name='vehiculo' id="vehiculo" class="w-full p-2 border rounded-lg">
+                <option value="" disabled selected>Selecciona una matrícula</option>  <!-- Opción por defecto para que no haya selección -->
+                {% for vehiculo in vehiculos %}
+                    <option value="{{ vehiculo.matricula }}">{{ vehiculo.matricula }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Selección de fecha -->
+        <div class="flex-1">
+            <label class="block text-gray-600">Selecciona la fecha:</label>
+            <input type="date" name="fecha_asignacion" id="fechaAsignacion" class="w-full p-2 border rounded-lg bg-yellow-100" />
+        </div>
+
+        <!-- Número de expedición -->
+        <div class="flex-1">
+            <label class="block text-gray-600">Número de Expedición:</label>
+            <input type="text" name="expedicion" id="expedicionInput" class="w-full p-2 border rounded-lg bg-yellow-100" placeholder="Número de Expedición" />
+        </div>
+
+        <!-- Botón de añadir -->
+        <div class="flex items-end">
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
+                Añadir
+            </button>
+        </div>
+    </form>
+</div>
+
+
+
+
 
         <!-- Tabla de Expediciones -->
         <div class="overflow-x-auto bg-white shadow-lg rounded-xl">
@@ -76,32 +122,54 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for expedicion in expediciones %}
-                    <tr class="bg-gray-100">
-                        <td class="px-6 py-4 text-blue-600 cursor-pointer" onclick="openEditModal('{{ expedicion.id }}')">
-                        {{ expedicion.id }}
-                        </td>
-                        <td class="px-6 py-4">{{ expedicion.fecha.strftime('%d/%m/%Y') }}</td>
-                        <td class="px-6 py-4">{{ expedicion.expedicion }}</td>
-                        <td class="px-6 py-4">{{ expedicion.cliente }}</td>
-                        <td class="px-6 py-4">{{ expedicion.destinatario }}</td>
-                        <td class="px-6 py-4">{{ expedicion.bultos }}</td>
-                        <td class="px-6 py-4">{{ expedicion.kg }}</td>
-                        <td class="px-6 py-4">{{ expedicion.estado }}</td>
-                        <td class="px-6 py-4">{{ expedicion.fecha_asignacion }}</td>
-                        <td class="px-6 py-4">{{ expedicion.asignada_a }}</td>
-                        <td class="px-6 py-4">{{ expedicion.viaje }}</td>
-                        <td class="px-6 py-4">{{ expedicion.fecha_entrega }}</td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="10" class="text-center py-4 text-gray-500">No hay expediciones registradas.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+    {% for expedicion in expediciones %}
+    <tr class="bg-gray-100">
+        <td class="px-6 py-4 text-blue-600 cursor-pointer" onclick="openEditModal('{{ expedicion.id }}')">
+            {{ expedicion.id }}
+        </td>
+        <td class="px-6 py-4">{{ expedicion.fecha.strftime('%d/%m/%Y') }}</td>
+        <td class="px-6 py-4">{{ expedicion.expedicion }}</td>
+        <td class="px-6 py-4">{{ expedicion.cliente }}</td>
+        <td class="px-6 py-4">{{ expedicion.destinatario }}</td>
+        <td class="px-6 py-4">{{ expedicion.bultos }}</td>
+        <td class="px-6 py-4">{{ expedicion.kg }}</td>
+        <td class="px-6 py-4">{{ expedicion.estado }}</td>
+        <td class="px-6 py-4">
+            {{ expedicion.fecha_asignacion.strftime('%d/%m/%Y') if expedicion.fecha_asignacion else '' }}
+        </td>
+        <td class="px-6 py-4">{{ expedicion.asignada_a }}</td>
+        <td class="px-6 py-4">{{ expedicion.viaje }}</td>
+        <td class="px-6 py-4">{{ expedicion.fecha_entrega }}</td>
+
+        <!-- Botones para imprimir -->
+        <td class="px-6 py-4 flex space-x-2">
+    <!-- Botón Imprimir Albarán -->
+            <form action="{{ url_for('imprimir_albaran', expedicion_id=expedicion.id) }}" method="get">
+    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+        <!-- Icono de etiqueta usando Font Awesome -->
+        <i class="fas fa-file-invoice"></i> <!-- Aquí está el icono de la etiqueta -->
+    </button>
+</form>
+
+    <!-- Botón Imprimir Etiqueta -->
+    <form action="{{ url_for('imprimir_etiqueta', expedicion_id=expedicion.id) }}" method="get">
+    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+        <!-- Icono de etiqueta usando Font Awesome -->
+        <i class="fas fa-tag text-white"></i> <!-- Aquí está el icono de la etiqueta -->
+    </button>
+</form>
+</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="10" class="text-center py-4 text-gray-500">No hay expediciones registradas.</td>
+    </tr>
+    {% endfor %}
+</tbody>
             </table>
         </div>
     </div>
+
 
     <script>
         function filterTable() {
@@ -187,8 +255,62 @@ function openEditModal(expedicionId) {
     window.location.href = "/repartos?id=" + expedicionId;
 }
 
+ function openAssignModal() {
+    // Muestra el contenedor de los inputs
+    document.getElementById("assignFields").classList.remove("hidden");
 
-    </script>
+const today = new Date();
+
+    // Formatear la fecha en el formato adecuado para el input (YYYY-MM-DD)
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Mes con dos dígitos
+    const day = today.getDate().toString().padStart(2, '0'); // Día con dos dígitos
+    const todayDate = `${year}-${month}-${day}`;
+
+    // Establecer la fecha de hoy como valor por defecto en el campo de fecha
+    document.getElementById('fechaAsignacion').value = todayDate;
+}
+
+
+
+
+    // Asegúrate de que el formulario no se cierre al hacer clic en "Añadir"
+    document.getElementById('asignarForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evita que el formulario se envíe de la forma tradicional
+
+        // Aquí puedes agregar la lógica para enviar los datos al servidor, usando fetch, AJAX, etc.
+        // En este caso solo estamos previniendo la recarga de la página
+        const vehiculo = document.getElementById('vehiculo').value;
+        const fechaAsignacion = document.getElementById('fechaAsignacion').value;
+        const expedicion = document.getElementById('expedicionInput').value;
+
+        // Mostrar los valores en la consola (esto es solo un ejemplo de lo que podrías hacer)
+        console.log(`Vehículo: ${vehiculo}, Fecha de Asignación: ${fechaAsignacion}, Expedición: ${expedicion}`);
+
+        // Aquí puedes enviar estos datos a tu servidor si lo necesitas (ejemplo con fetch)
+        // fetch('/asignar_expedicion', {
+        //     method: 'POST',
+        //     body: JSON.stringify({
+        //         vehiculo: vehiculo,
+        //         fecha_asignacion: fechaAsignacion,
+        //         expedicion: expedicion
+        //     }),
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // })
+        // .then(response => response.json())
+        // .then(data => {
+        //     // Lógica para manejar la respuesta del servidor
+        //     console.log(data);
+        // })
+        // .catch(error => console.error('Error:', error));
+
+        // Si deseas limpiar los campos después de enviar (pero no cerrar el formulario):
+        // document.getElementById('asignarForm').reset();
+    });
+</script>
+
 
     {% include 'modal_grabar_expedicion.html' %}
     {% include 'modal_editar_expedicion.html' %}

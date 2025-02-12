@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etiqueta de Expedición</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .titulo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .campo {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .campo span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="titulo">Etiqueta de Expedición</div>
+    <div class="campo"><span>ID:</span> {{ expedicion.id }}</div>
+    <div class="campo"><span>Fecha:</span> {{ expedicion.fecha.strftime('%d/%m/%Y') }}</div>
+    <div class="campo"><span>Cliente:</span> {{ expedicion.cliente }}</div>
+    <div class="campo"><span>Destinatario:</span> {{ expedicion.destinatario }}</div>
+    <div class="campo"><span>Bultos:</span> {{ expedicion.bultos }}</div>
+    <div class="campo"><span>Kg:</span> {{ expedicion.kg }}</div>
+    <div class="campo"><span>Estado:</span> {{ expedicion.estado }}</div>
+    <div class="campo"><span>Fecha Asignado:</span> {{ expedicion.fecha_asignacion.strftime('%d/%m/%Y') if expedicion.fecha_asignacion else 'No asignado' }}</div>
+    <div class="campo"><span>Asignado A:</span> {{ expedicion.asignada_a }}</div>
+    <div class="campo"><span>Viaje:</span> {{ expedicion.viaje }}</div>
+    <div class="campo"><span>Fecha Entrega:</span> {{ expedicion.fecha_entrega.strftime('%d/%m/%Y') }}</div>
+</body>
+</html>

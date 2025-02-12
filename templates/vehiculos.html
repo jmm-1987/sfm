@@ -73,9 +73,22 @@
                     <tr class="bg-gray-100">
                         <td class="px-6 py-4">{{ vehiculo.matricula }}</td>
                         <td class="px-6 py-4">{{ vehiculo.capacidad }}</td>
-                        <td class="px-6 py-4">{{ vehiculo.caducidad_itv.strftime('%d/%m/%Y') }}</td>
-                        <td class="px-6 py-4">{{ vehiculo.caducidad_seguro.strftime('%d/%m/%Y') }}</td>
-                        <td class="px-6 py-4">{{ vehiculo.caducidad_tacografo.strftime('%d/%m/%Y') }}</td>
+                        <td class="px-6 py-4">
+    {% if vehiculo.caducidad_itv %}
+        {{ vehiculo.caducidad_itv.strftime('%d/%m/%Y') }}
+    {% endif %}
+</td>
+<td class="px-6 py-4">
+    {% if vehiculo.caducidad_seguro %}
+        {{ vehiculo.caducidad_seguro.strftime('%d/%m/%Y') }}
+    {% endif %}
+</td>
+<td class="px-6 py-4">
+    {% if vehiculo.caducidad_tacografo %}
+        {{ vehiculo.caducidad_tacografo.strftime('%d/%m/%Y') }}
+    {% endif %}
+</td>
+
                         <td class="px-6 py-4">{{ vehiculo.chofer_habitual }}</td>
                     </tr>
                     {% else %}

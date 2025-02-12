@@ -6,6 +6,10 @@ from metodos.grabar_expedicion import ruta_grabar_expedidion
 from metodos.grabar_cliente import ruta_grabar_cliente
 from metodos.grabar_vehiculo import ruta_grabar_vehiculo
 from metodos.editar_expedicion import ruta_editar_expedicion
+from metodos.asignar_reparto import ruta_asignar_expedicion
+from metodos.imprimir_etiqueta import ruta_imprimir_etiqueta
+from metodos.imprimir_albaran import ruta_imprimir_albaran
+
 
 
 
@@ -23,6 +27,10 @@ ruta_grabar_expedidion(app)
 ruta_grabar_cliente(app)
 ruta_grabar_vehiculo(app)
 ruta_editar_expedicion(app)
+ruta_asignar_expedicion(app)
+ruta_imprimir_etiqueta(app)
+ruta_imprimir_albaran(app)
+
 
 # Modelo de usuario básico (para fines de ejemplo)
 class User(UserMixin):
@@ -77,7 +85,7 @@ def repartos():
     agencias = ["SFM","PALLEX","SEYTRA","TyD","TEDi","REDPALLETS"]
     expedicion_id = request.args.get("id")
     expedicion = get_expedicion_by_id(expedicion_id) if expedicion_id else None
-    expediciones = db.session.query(Expedicion).all()  # Obtener todas las expediciones
+    expediciones = db.session.query(Expedicion).order_by(Expedicion.fecha.desc()).all()
     return render_template("repartos.html", expediciones=expediciones, clientes=clientes,
                            vehiculos=vehiculos, expedicion=expedicion, agencias=agencias)
 

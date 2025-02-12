@@ -1,0 +1,35 @@
+<!-- Modal Asignar Reparto -->
+<div id="assignModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Asignar Reparto</h2>
+
+        <form method="POST" action="{{ url_for('asignar_expedicion') }}">
+            <!-- Selector de Vehículo -->
+            <label class="block text-gray-600">Selecciona un camión:</label>
+            <select name="vehiculo" class="w-full p-2 border rounded-lg mb-3">
+                {% for vehiculo in vehiculos %}
+                    <option value="{{ vehiculo.matricula }}">{{ vehiculo.matricula }}</option>
+                {% endfor %}
+            </select>
+            <label class="block text-gray-600">Selecciona la fecha de asignación:</label>
+            <input type="date" name="fecha_asignacion" class="w-full p-2 border rounded-lg mb-3" id="fecha_asignacion">
+
+            <!-- Input de Expedición -->
+            <label class="block text-gray-600">Número de Expedición:</label>
+            <input type="text" name="expedicion" class="w-full p-2 border rounded-lg mb-3" placeholder="Ingrese el ID de expedición" required>
+
+            <!-- Botones -->
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeAssignModal()" class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500">Cancelar</button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Asignar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let today = new Date().toISOString().split('T')[0];
+        document.getElementById("fecha_asignacion").value = today;
+    });
+</script>

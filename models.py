@@ -27,15 +27,17 @@ class Expedicion(Base):
     remitente = Column(String(200), nullable=False)
     dir_remitente = Column(String(200), nullable=True)
     cod_postal_remitente = Column(Integer, nullable=False)
-    poblacion_remitente = Column(String(200), nullable=True)
-    provincia_remitente = Column(String(200), nullable=True)
+    poblacion_remitente = Column(String(200), nullable=False)
+    provincia_remitente = Column(String(200), nullable=False)
     pais_remitente = Column(String(100), nullable=False)
+    tlf_remitente = Column(String(200), nullable=True)
     destinatario = Column(String(200), nullable=False)
     dir_destinatario = Column(String(200), nullable=False)
     cod_postal_destinatario = Column(Integer, nullable=False)
     poblacion_destinatario = Column(String(200), nullable=False)
     provincia_destinatario = Column(String(200), nullable=False)
     pais_destinatario = Column(String(100), nullable=False)
+    tlf_destinatario = Column(String(200), nullable=True)
     bultos = Column(Integer, nullable=False)
     kg = Column(Integer, nullable=False)
     volumen = Column(Float, nullable=True)
@@ -56,6 +58,14 @@ class Expedicion(Base):
     coste_arrastre = Column(Float, nullable=True, default=0.0)
     coste_removido = Column(Float, nullable=True, default=0.0)
     coste_distribucion = Column(Float, nullable=True, default=0.0)
+    albaran_entrega = Column(Boolean, default=False)
+    albaran_cliente = Column(Boolean, default=False)
+    observaciones = Column(String(200), nullable=True)
+    incidencia_tipo = Column(Enum("ausente", "rechazado", "sin tiempo", "0", name="incidencia_tipo"), nullable=True,
+                    default="0")
+    fecha_incidencia = Column(DateTime, nullable=True)
+    incidencia_ampliacion = Column(String(200), nullable=True)
+    dev_alb_firmado = Column(Boolean, default=False)
 
     __table_args__ = (
         UniqueConstraint('expedicion', 'cliente', name='_expedicion_cliente_uc'),
@@ -65,12 +75,12 @@ class Expedicion(Base):
                  cod_postal_remitente,
                  poblacion_remitente, provincia_remitente, pais_remitente, destinatario, dir_destinatario,
                  cod_postal_destinatario, poblacion_destinatario, provincia_destinatario, pais_destinatario, bultos, kg,
-                 volumen, kg_conv,
-                 tipo_bulto, reembolso=0.0, estado="almacen", facturada=False, asignada_a=None, viaje=None,
-                 fecha_asignacion=None, fecha_entrega=None,
+                 volumen, kg_conv, incidencia_tipo=None, incidencia_ampliacion=None,
+                 tipo_bulto=None, reembolso=0.0, estado="almacen", facturada=False, asignada_a=None, viaje=None,
+                 fecha_asignacion=None, fecha_entrega=None, fecha_incidencia = None,
                  ingreso_com_reembolso=0.0, ingreso_distribucion=0.0, ingreso_cargo_adicional=0.0, coste_reparto=0.0,
-                 coste_arrastre=0.0, coste_removido=0.0,
-                 coste_distribucion=0.0):
+                 coste_arrastre=0.0, coste_removido=0.0,dev_alb_firmado=False,
+                 coste_distribucion=0.0, tlf_remitente=0, tlf_destinatario=0, albaran_entrega=False, albaran_cliente=False, observaciones=None):
         self.fecha = fecha
         self.expedicion = expedicion
         self.agencia_origen = agencia_origen
@@ -107,6 +117,15 @@ class Expedicion(Base):
         self.coste_arrastre = coste_arrastre
         self.coste_removido = coste_removido
         self.coste_distribucion = coste_distribucion
+        self.tlf_remitente = tlf_remitente
+        self.tlf_destinatario = tlf_destinatario
+        self.albaran_cliente = albaran_cliente
+        self.albaran_entrega = albaran_entrega
+        self.observaciones = observaciones
+        self.incidencia_tipo = incidencia_tipo
+        self.incidencia_ampliacion = incidencia_ampliacion
+        self.dev_alb_firmado = dev_alb_firmado
+        self.fecha_incidencia = fecha_incidencia
 
     def __str__(self):
         return (
@@ -160,10 +179,11 @@ class Cliente(Base):
     pais = Column(String(100), nullable=True)
     email = Column(String(100), nullable=True)
     telefono = Column(Integer, nullable=True)
+    tarifa = Column(String(100), nullable=True)
     notas = Column(String(300), nullable=True)
     activo = Column(Boolean, default=True, nullable=False)
 
-    def __init__(self, alias, nombre_fiscal, direccion=None, codigo_postal=None, poblacion=None, provincia=None, pais=None, email=None, telefono=None, notas =None, activo=True):
+    def __init__(self, alias, nombre_fiscal, direccion=None, codigo_postal=None, poblacion=None, provincia=None, pais=None, email=None, telefono=None, tarifa=None, notas =None, activo=True):
         self.alias = alias
         self.nombre_fiscal = nombre_fiscal
         self.direccion = direccion
@@ -175,6 +195,7 @@ class Cliente(Base):
         self.telefono = telefono
         self.notas = notas
         self.activo = activo
+        self.tarifa = tarifa
 
     def __str__(self):
         return f"Cliente: {self.alias} ({'Activo' if self.activo else 'Inactivo'})"
@@ -184,6 +205,7 @@ class Vehiculo(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     matricula = Column(String(20), unique=True, nullable=False)
+    alias = Column(String(20), nullable=True)
     capacidad = Column(Integer, nullable=False)
     caducidad_itv = Column(Date, nullable=True)
     caducidad_seguro = Column(Date, nullable=True)
@@ -191,7 +213,7 @@ class Vehiculo(Base):
     chofer_habitual = Column(String(200), nullable=True)
     activo = Column(Boolean, default=True, nullable=False)
 
-    def __init__(self, matricula, capacidad, caducidad_itv=None, caducidad_seguro=None, caducidad_tacografo=None, chofer_habitual=None, activo=True):
+    def __init__(self, matricula,alias=None, capacidad=0, caducidad_itv="99/99/9999 00:00:00", caducidad_seguro=None, caducidad_tacografo=None, chofer_habitual=None, activo=True):
         self.matricula = matricula
         self.capacidad = capacidad
         self.caducidad_itv = caducidad_itv
@@ -199,6 +221,7 @@ class Vehiculo(Base):
         self.caducidad_tacografo = caducidad_tacografo
         self.chofer_habitual = chofer_habitual
         self.activo = activo
+        self.alias = alias
 
     def __str__(self):
         return f"Vehículo: {self.matricula} ({'Activo' if self.activo else 'Inactivo'})"
