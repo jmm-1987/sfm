@@ -54,6 +54,7 @@
         <!-- Sumario de expediciones -->
 <div id="summary" class="bg-blue-200 p-4 rounded-lg mb-4 text-blue-900 font-semibold">
     <p>Expediciones: <span id="totalExpediciones">0</span>&nbsp;&nbsp;&nbsp; Bultos: <span id="totalBultos">0</span> &nbsp;&nbsp;&nbsp; Kg: <span id="totalKg">0</span>&nbsp;&nbsp;&nbsp;Volumen: <span id="totalVolumen">0</span>&nbsp;&nbsp;&nbsp;Kg Conv: <span id="totalKg_conv">0</span></p>
+     <p>Portes: <span id="totalDistribucion">0</span>&nbsp;&nbsp;&nbsp; Cargos: <span id="totalCargos">0</span> &nbsp Total: <span id="totalSuma">0</span></p>
 
 </div>
 
@@ -78,6 +79,7 @@
                 <th class="px-6 py-4 text-left">Entrega</th>
                 <th class="px-6 py-4 text-left">Distr.</th>
                 <th class="px-6 py-4 text-left">Cargo</th>
+                <th class="px-6 py-4 text-left">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -98,6 +100,15 @@
                 <td class="px-6 py-4">{{ expedicion.fecha_entrega.strftime('%d/%m/%Y') if expedicion.fecha_entrega else '' }}</td>
                 <td class="px-6 py-4">{{ expedicion.ingreso_distribucion }}</td>
                 <td class="px-6 py-4">{{ expedicion.ingreso_cargo_adicional }}</td>
+                <td class="px-6 py-4">
+    <button onclick="retasar({{ expedicion.id }})"
+        class="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 relative group">
+        💰
+        <span class="absolute left-1/2 transform -translate-x-1/2 -top-8 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            Retasar
+        </span>
+    </button>
+</td>
             </tr>
             {% else %}
             <tr>
@@ -116,6 +127,9 @@
         let totalKg = 0;
         let totalVolumen = 0;
         let totalKg_conv = 0;
+        let totalDistribucion = 0;
+        let totalCargos = 0;
+
 
         const rows = document.querySelectorAll('#expedicionTable tbody tr');
 
@@ -126,14 +140,21 @@
                 totalKg += parseFloat(row.cells[8].textContent) || 0;
                 totalVolumen += parseFloat(row.cells[9].textContent) || 0;
                 totalKg_conv += parseFloat(row.cells[10].textContent) || 0;
+                totalDistribucion += parseFloat(row.cells[13].textContent) || 0;
+                totalCargos += parseFloat(row.cells[14].textContent) || 0;
             }
         });
+
+        let totalSuma = totalDistribucion + totalCargos;
 
         document.getElementById('totalExpediciones').textContent = totalExpediciones;
         document.getElementById('totalBultos').textContent = totalBultos;
         document.getElementById('totalKg').textContent = totalKg.toFixed(0);
         document.getElementById('totalVolumen').textContent = totalVolumen.toFixed(2);
         document.getElementById('totalKg_conv').textContent = totalKg_conv.toFixed(0);
+        document.getElementById('totalDistribucion').textContent = totalDistribucion.toFixed(2);
+        document.getElementById('totalCargos').textContent = totalCargos.toFixed(2);
+        document.getElementById('totalSuma').textContent = totalSuma.toFixed(2);
     }
 
     function filterTable() {

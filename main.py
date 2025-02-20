@@ -1,15 +1,20 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 import db
+from datetime import date
 from models import User, Expedicion, Cliente, Vehiculo
 from metodos.grabar_expedicion import ruta_grabar_expedidion
 from metodos.grabar_cliente import ruta_grabar_cliente
 from metodos.grabar_vehiculo import ruta_grabar_vehiculo
 from metodos.editar_expedicion import ruta_editar_expedicion
-from metodos.asignar_reparto import ruta_asignar_expedicion
+from metodos.asignar_expedicion import ruta_asignar_expedicion
 from metodos.imprimir_etiqueta import ruta_imprimir_etiqueta
 from metodos.imprimir_albaran import ruta_imprimir_albaran
-
+from metodos.asignar_reparto import ruta_asignar_reparto
+from metodos.entregar_expedicion import ruta_entregar_expedicion
+from metodos.consultar_expedicion import ruta_consultar_expedicion
+from metodos.editar_vehiculo import ruta_editar_vehiculo
+from metodos.editar_cliente import ruta_editar_cliente
 
 
 
@@ -30,6 +35,12 @@ ruta_editar_expedicion(app)
 ruta_asignar_expedicion(app)
 ruta_imprimir_etiqueta(app)
 ruta_imprimir_albaran(app)
+ruta_asignar_reparto(app)
+ruta_entregar_expedicion(app)
+ruta_consultar_expedicion(app)
+ruta_editar_vehiculo(app)
+ruta_editar_cliente(app)
+
 
 
 # Modelo de usuario básico (para fines de ejemplo)
@@ -83,11 +94,15 @@ def repartos():
     vehiculos = db.session.query(Vehiculo.matricula).all()
     clientes = db.session.query(Cliente.alias).all()
     agencias = ["SFM","PALLEX","SEYTRA","TyD","TEDi","REDPALLETS"]
+    tipo_bulto = ["MQTR","QTR","MLIGHT","HALF","LIGHT","FULL","MEGAFULL"]
     expedicion_id = request.args.get("id")
     expedicion = get_expedicion_by_id(expedicion_id) if expedicion_id else None
-    expediciones = db.session.query(Expedicion).order_by(Expedicion.fecha.desc()).all()
+    expediciones = db.session.query(Expedicion).filter(Expedicion.estado != "entregado").order_by(Expedicion.fecha.desc()).all()
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
     return render_template("repartos.html", expediciones=expediciones, clientes=clientes,
-                           vehiculos=vehiculos, expedicion=expedicion, agencias=agencias)
+                           vehiculos=vehiculos, expedicion=expedicion, agencias=agencias, fecha_actual=fecha_actual,
+                           tipo_bulto=tipo_bulto)
 
 @app.route("/get_expedicion_by_id")
 def get_expedicion_by_id(expedicion_id):
@@ -100,13 +115,27 @@ def get_expedicion_by_id(expedicion_id):
 
     return expedicion
 
+@app.route("/get_cliente_by_alias")
+def get_cliente_by_alias(cliente_alias):
+
+    if not cliente_alias:
+        return None
+
+    # Busca la expedición por su ID en la base de datos
+    cliente = db.session.query(Cliente).filter_by(alias=cliente_alias).first()
+
+    return cliente
+
 
 
 @app.route('/clientes')
 @login_required
 def clientes():
+    tarifas=["no aplica","06PX25_"]
     clientes = db.session.query(Cliente).all()  # Obtener todas las expediciones
-    return render_template("clientes.html", clientes=clientes)
+    cliente_alias = request.args.get("alias")
+    cliente = get_cliente_by_alias(cliente_alias) if cliente_alias else None
+    return render_template("clientes.html", clientes=clientes, tarifas=tarifas, cliente=cliente)
 
 @app.route('/facturacion')
 @login_required
@@ -119,6 +148,12 @@ def facturacion():
 def produccion():
     expediciones = db.session.query(Expedicion).all()  # Obtener todas las expediciones
     return render_template("produccion.html", expediciones=expediciones)
+
+@app.route('/cerrar_repartos')
+@login_required
+def cerrar_repartos():
+    expediciones_asignadas = db.session.query(Expedicion).filter(Expedicion.estado == "en reparto").all()
+    return render_template("cerrar_repartos.html", expediciones_asignadas=expediciones_asignadas)
 
 
 

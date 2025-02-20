@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asignar Reparto</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Arial', sans-serif; }
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Menú superior -->
+    <header class="bg-blue-600 p-2 flex justify-between items-center shadow-lg">
+        <div class="flex items-center">
+            <img src="{{ url_for('static', filename='img/logosfm.jpg') }}" alt="Logo" class="w-32 h-20">
+        </div>
+        <div class="flex items-center space-x-4">
+            <a href="vehiculos" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Vehículos</a>
+            <a href="clientes" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Clientes</a>
+            <a href="produccion" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Producción</a>
+            <a href="facturacion" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Facturación</a>
+            <a href="repartos" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Repartos</a>
+            <a href="importar" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Importar</a>
+            <button id="logoutBtn" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- Contenedor principal -->
+    <div class="flex flex-col mt-6 mx-6">
+        <h2 class="text-2xl font-semibold text-blue-700 mb-6">Asignar Reparto</h2>
+
+        <form action="/asignar_expedicion" method="POST" class="bg-white shadow-lg rounded-lg p-6">
+            <!-- Matrícula seleccionada -->
+            <div class="mb-4">
+                <label class="block text-gray-600 mb-1">Matrícula seleccionada:</label>
+                <input type="text" name="matricula" id="currentVehicle" class="w-full p-2 border rounded-lg bg-gray-100" value="{{ vehiculo }}" readonly>
+            </div>
+
+            <!-- Número de Expedición -->
+            <div class="mb-4">
+                <label class="block text-gray-600 mb-1">Número de Expedición:</label>
+                <input type="text" name="expedicion" id="expedicionInput" class="w-full p-2 border rounded-lg bg-yellow-100" placeholder="Número de Expedición">
+            </div>
+
+            <!-- Fecha -->
+            <div class="mb-4">
+                <label class="block text-gray-600 mb-1">Fecha:</label>
+                <input type="date" name="fecha_asignacion" id="fechaAsignacion" class="w-full p-2 border rounded-lg bg-yellow-100" value="{{ fecha_asignacion }}" readonly>
+            </div>
+
+            <!-- Tabla de Asignaciones -->
+            <div class="mb-4">
+    <label class="block text-gray-600 mb-1">Tabla de Asignaciones:</label>
+    <table id="assignmentsTable" class="w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <thead>
+            <tr class="bg-blue-100 text-blue-700">
+                <th class="px-4 py-2">Fecha</th>
+                <th class="px-4 py-2">Cliente</th>
+                <th class="px-4 py-2">Destinatario</th>
+                <th class="px-4 py-2">Población</th>
+                <th class="px-4 py-2">Bultos</th>
+                <th class="px-4 py-2">Kg</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expedicion in expediciones_asignadas %}
+            <tr class="hover:bg-gray-100">
+                <td class="border px-4 py-2">{{ expedicion.fecha }}</td>
+                <td class="border px-4 py-2">{{ expedicion.cliente }}</td>
+                <td class="border px-4 py-2">{{ expedicion.destinatario }}</td>
+                <td class="border px-4 py-2">{{ expedicion.poblacion }}</td>
+                <td class="border px-4 py-2">{{ expedicion.bultos }}</td>
+                <td class="border px-4 py-2">{{ expedicion.kg }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+            <!-- Botones -->
+            <div class="flex justify-between">
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+                    Añadir Asignación
+                </button>
+                <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onclick="window.location.href='/repartos'">
+    Terminar
+</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+
+
+        // Establecer valores iniciales desde la URL
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const matricula = urlParams.get('matricula');
+            const fecha = urlParams.get('fecha');
+
+            if (matricula) document.getElementById('currentVehicle').value = matricula;
+            if (fecha) document.getElementById('fechaAsignacion').value = fecha;
+        };
+
+document.addEventListener("DOMContentLoaded", function () {
+        // Obtener referencias a los elementos
+        const expedicionInput = document.getElementById('expedicionInput');
+        const assignButton = document.querySelector("button[type='submit']");
+
+        // Colocar el foco en el campo "expedicion" al cargar la página
+        expedicionInput.focus();
+
+        // Detectar el evento "Enter" en el campo "expedicion"
+        expedicionInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Evita el comportamiento predeterminado
+
+                if (expedicionInput.value.trim() !== "") { // Solo ejecuta si hay un valor
+                    assignButton.click(); // Simula el clic en el botón "Añadir Asignación"
+
+                    // Pequeño retraso para garantizar que el foco vuelva correctamente
+                    setTimeout(() => {
+                        expedicionInput.value = ""; // Borra el campo después de la asignación
+                        expedicionInput.focus(); // Mantiene el foco en el campo "expedicion"
+                    }, 100);
+                }
+            }
+        });
+
+        // Asegurar que el foco siempre regrese a "expedicion" si se pierde
+        expedicionInput.addEventListener("blur", function () {
+            setTimeout(() => expedicionInput.focus(), 100);
+        });
+    });
+    </script>
+</body>
+</html>

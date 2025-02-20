@@ -37,31 +37,24 @@
     </select>
 </div>
 
-                        <div class="col-span-2">
-                            <label class="block text-sm mb-1">Agencia origen</label>
-                            <select name="agencia_origen" class="w-full p-2 border rounded" required>
-                                <option value="PALLEX">SFM</option>
-                                 <option value="PALLEX">PALLEX</option>
-                                 <option value="REDPALET">REDPALET</option>
-                                 <option value="SEYTRA">SEYTRA</option>
-                                <option value="TYD">TYD</option>
-                                <option value="ELECTRODOMESTICOS">ELECTRODOMESTICOS</option>
-                                <option value="TEDi">TEDi</option>
-                            </select>
-                        </div>
+                       <div class="col-span-2">
+    <label class="block text-sm mb-1">Agencia origen</label>
+    <select name="agencia_origen" class="w-full p-2 border rounded" required>
+        {% for agencia in agencias %}
+            <option value="{{ agencia }}">{{ agencia }}</option>
+        {% endfor %}
+    </select>
+</div>
+
 
                         <div class="col-span-2">
-                            <label class="block text-sm mb-1">Agencia destino</label>
-                            <select name="agencia_destino" class="w-full p-2 border rounded" required>
-                                <option value="PALLEX">SFM</option>
-                                 <option value="PALLEX">PALLEX</option>
-                                 <option value="REDPALET">REDPALET</option>
-                                 <option value="SEYTRA">SEYTRA</option>
-                                <option value="TYD">TYD</option>
-                                <option value="ELECTRODOMESTICOS">ELECTRODOMESTICOS</option>
-                                <option value="TEDi">TEDi</option>
-                            </select>
-                        </div>
+    <label class="block text-sm mb-1">Agencia destino</label>
+    <select name="agencia_destino" class="w-full p-2 border rounded" required>
+        {% for agencia in agencias %}
+            <option value="{{ agencia }}">{{ agencia }}</option>
+        {% endfor %}
+    </select>
+</div>
                     </div>
                 </div>
 
@@ -156,9 +149,14 @@
                             <input type="number" name="kg_conv" class="w-full p-2 border rounded" required>
                         </div>
                         <div>
-                            <label class="block text-sm mb-1">Tipo bulto</label>
-                            <input type="text" name="tipo_bulto" class="w-full p-2 border rounded" required>
-                        </div>
+    <label class="block text-sm mb-1">Tipo de Bulto</label>
+    <select name="tipo_bulto" class="w-full p-2 border rounded" required>
+        {% for tipo in tipo_bulto %}
+            <option value="{{ tipo }}">{{ tipo }}</option>
+        {% endfor %}
+    </select>
+</div>
+
                         <div>
                             <label class="block text-sm mb-1">Reembolso (€)</label>
                             <input type="number" step="0.01" name="reembolso" class="w-full p-2 border rounded">

@@ -70,6 +70,16 @@
                 </div>
             </div>
 
+            <div>
+                <label class="block text-sm mb-1">Tarifa</label>
+                    <select name="tarifa" class="w-full p-2 border rounded">
+                    {% for tarifa in tarifas %}
+                        <option value="{{ tarifa}}">{{ tarifa }}</option>
+                    {% endfor %}
+                    </select>
+            </div>
+
+
             <!-- Activación -->
             <div class="bg-gray-100 p-4 rounded-lg mt-6">
                 <div class="flex items-center">

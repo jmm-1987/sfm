@@ -69,38 +69,40 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for vehiculo in vehiculos %}
-                    <tr class="bg-gray-100">
-                        <td class="px-6 py-4">{{ vehiculo.matricula }}</td>
-                        <td class="px-6 py-4">{{ vehiculo.capacidad }}</td>
-                        <td class="px-6 py-4">
-    {% if vehiculo.caducidad_itv %}
-        {{ vehiculo.caducidad_itv.strftime('%d/%m/%Y') }}
-    {% endif %}
-</td>
-<td class="px-6 py-4">
-    {% if vehiculo.caducidad_seguro %}
-        {{ vehiculo.caducidad_seguro.strftime('%d/%m/%Y') }}
-    {% endif %}
-</td>
-<td class="px-6 py-4">
-    {% if vehiculo.caducidad_tacografo %}
-        {{ vehiculo.caducidad_tacografo.strftime('%d/%m/%Y') }}
-    {% endif %}
-</td>
+    {% for vehiculo in vehiculos %}
+    <tr class="bg-gray-100 hover:bg-gray-200">
+        <td class="px-6 py-4 text-blue-600 hover:underline">
+            <a href="javascript:void(0);"
+   onclick="abrirEditarModal('{{ vehiculo.matricula }}',
+                              '{{ vehiculo.capacidad }}',
+                              '{{ vehiculo.chofer_habitual }}',
+                              '{{ vehiculo.caducidad_itv.strftime('%Y-%m-%d') if vehiculo.caducidad_itv else '' }}',
+                              '{{ vehiculo.caducidad_seguro.strftime('%Y-%m-%d') if vehiculo.caducidad_seguro else '' }}',
+                              '{{ vehiculo.caducidad_tacografo.strftime('%Y-%m-%d') if vehiculo.caducidad_tacografo else '' }}',
+                              {{ 'true' if vehiculo.activo else 'false' }})">
+    {{ vehiculo.matricula }}
+</a>
+        </td>
+        <td class="px-6 py-4">{{ vehiculo.capacidad }}</td>
+        <td class="px-6 py-4">{{ vehiculo.caducidad_itv.strftime('%d/%m/%Y') if vehiculo.caducidad_itv else '' }}</td>
+        <td class="px-6 py-4">{{ vehiculo.caducidad_seguro.strftime('%d/%m/%Y') if vehiculo.caducidad_seguro else '' }}</td>
+        <td class="px-6 py-4">{{ vehiculo.caducidad_tacografo.strftime('%d/%m/%Y') if vehiculo.caducidad_tacografo else '' }}</td>
+        <td class="px-6 py-4">{{ vehiculo.chofer_habitual }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="6" class="text-center py-4 text-gray-500">No hay vehículos registrados.</td>
+    </tr>
+    {% endfor %}
+</tbody>
 
-                        <td class="px-6 py-4">{{ vehiculo.chofer_habitual }}</td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="6" class="text-center py-4 text-gray-500">No hay vehículos registrados.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+
             </table>
         </div>
     </div>
+
 <script>
+
     function openModal() {
         document.getElementById('vehiculoModal').classList.remove('hidden');
     }
@@ -108,8 +110,31 @@
     function closeModal() {
         document.getElementById('vehiculoModal').classList.add('hidden');
     }
-</script>
 
-{% include 'modal_grabar_vehiculo.html' %}
+
+function abrirEditarModal(matricula, capacidad, chofer, itv, seguro, tacografo, activo) {
+    // Asigna los valores a los inputs del modal
+    document.getElementById("matricula").value = matricula;
+    document.getElementById("capacidad").value = capacidad;
+    document.getElementById("chofer_habitual").value = chofer;
+    document.getElementById("caducidad_itv").value = itv;
+    document.getElementById("caducidad_seguro").value = seguro;
+    document.getElementById("caducidad_tacografo").value = tacografo;
+    document.getElementById("activo").checked = activo;
+
+    // Muestra el modal
+    document.getElementById("modal_editar_vehiculo").classList.remove("hidden");
+}
+
+
+// Función para cerrar el modal
+function cerrarEditarModal() {
+    document.getElementById("modal_editar_vehiculo").classList.add("hidden");
+}
+
+</script>
+    {% include 'modal_editar_vehiculo.html' %}
+    {% include 'modal_grabar_vehiculo.html' %}
+
 </body>
 </html>

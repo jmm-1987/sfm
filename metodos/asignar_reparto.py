@@ -1,32 +1,34 @@
+from flask import request, render_template
+import db
+from models import Expedicion
 from datetime import datetime
 
-from flask import render_template, request, redirect, url_for
-import db
-from db import session
-from models import Expedicion
+
+def ruta_asignar_reparto(app):
+    @app.route('/asignar_reparto', methods=['POST', 'GET'])
+    def asignar_reparto():
+        vehiculo = request.args.get('matricula') or request.form.get('matricula')
+        fecha_asignacion_str = request.args.get('fecha_asignacion') or request.form.get('fecha_asignacion')
+
+        try:
+            fecha_asignacion = datetime.strptime(fecha_asignacion_str, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            # Intentar solo la fecha si el tiempo no está incluido
+            fecha_asignacion = datetime.strptime(fecha_asignacion_str, '%Y-%m-%d')
 
 
-def ruta_asignar_expedicion(app):
-    @app.route('/asignar_expedicion', methods=['GET', 'POST'])
-    def asignar_expedicion():
-        expedicion_form = request.form.get('expedicion')
-        vehiculo = request.form.get('vehiculo')
         print(vehiculo)
-        expedicion_id = db.session.query(Expedicion).filter_by(expedicion=expedicion_form).first()
+        print(fecha_asignacion)
 
-        expedicion = db.session.query(Expedicion).filter_by(id=expedicion_id.id).first()
+        expediciones_asignadas = db.session.query(Expedicion).filter(
 
-        if request.method == 'POST':
-            # Actualizar los campos de la expedición
-            fecha_str = request.form['fecha_asignacion']
-            fecha_obj = datetime.strptime(fecha_str, "%Y-%m-%d").date()
-            expedicion.fecha_asignacion = fecha_obj
-            expedicion.asignada_a = vehiculo
-            expedicion.estado = "en reparto"
+            Expedicion.asignada_a == vehiculo,
+            Expedicion.fecha_asignacion == fecha_asignacion
+        ).all()
 
-            db.session.commit()
-            return redirect(url_for('repartos'))
+        print(expediciones_asignadas)
 
-        expediciones = db.session.query(Expedicion).all()
 
-        return render_template('repartos.html', expediciones=expediciones, expedidion=expedicion)
+        # Redirigir con los parámetros necesarios para restaurar el estado
+        return render_template('asignar_reparto.html', vehiculo=vehiculo, fecha_asignacion=fecha_asignacion.strftime('%Y-%m-%d'),
+                               expediciones_asignadas=expediciones_asignadas)

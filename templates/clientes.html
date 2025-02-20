@@ -64,7 +64,9 @@
                 <tbody>
                     {% for cliente in clientes %}
                     <tr class="bg-gray-100">
-                        <td class="px-6 py-4">{{ cliente.alias }}</td>
+                        <td class="px-6 py-4 text-blue-600 cursor-pointer" onclick="openEditModal('{{ cliente.alias }}')">
+                    {{ cliente.alias }}
+                        </td>
                         <td class="px-6 py-4">{{ cliente.nombre_fiscal }}</td>
                         <td class="px-6 py-4">{{ cliente.direccion }}</td>
                         <td class="px-6 py-4">{{ cliente.poblacion }}</td>
@@ -128,9 +130,21 @@
         document.getElementById('clienteModal').classList.add('hidden');
     }
 
+function openEditModal(clientealias) {
+    window.location.href = "/clientes?alias=" + encodeURIComponent(clientealias);
+}
+
+
+// Función para cerrar el modal
+function cerrarEditarModal() {
+    document.getElementById("modal_editar_cliente").classList.add("hidden");
+}
+
+
 </script>
 
 {% include 'modal_grabar_cliente.html' %}
+{% include 'modal_editar_cliente.html' %}
 
 </body>
 </html>

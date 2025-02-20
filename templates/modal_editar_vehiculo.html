@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+    <title>Editar Vehículo</title>
+</head>
+<body>
+    <!-- Modal de Edición -->
+    <div id="modal_editar_vehiculo" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 p-8">
+            <h2 class="text-2xl font-bold mb-6 text-blue-700 text-center">Editar Vehículo</h2>
+
+            <form id="editarVehiculoForm" method="POST" action="">
+                <input type="hidden" name="id" id="vehiculo_id">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Datos del Vehículo -->
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-3 text-blue-600">Datos del Vehículo</h3>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Matrícula</label>
+                                <input type="text" name="matricula" id="matricula" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Capacidad</label>
+                                <input type="number" name="capacidad" id="capacidad" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Chofer Habitual</label>
+                                <input type="text" name="chofer_habitual" id="chofer_habitual" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fechas de Vencimiento -->
+                    <div class="bg-gray-200 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-3 text-blue-600">Fechas de Vencimiento</h3>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Caducidad ITV</label>
+                                <input type="date" name="caducidad_itv" id="caducidad_itv" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Caducidad Seguro</label>
+                                <input type="date" name="caducidad_seguro" id="caducidad_seguro" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Caducidad Tacógrafo</label>
+                                <input type="date" name="caducidad_tacografo" id="caducidad_tacografo" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estado -->
+                <div class="bg-gray-100 p-4 rounded-lg mt-6">
+                    <div class="flex items-center">
+                        <input type="checkbox" name="activo" id="activo" class="mr-2">
+                        <label class="text-sm font-medium text-gray-700">Activo</label>
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="button" onclick="cerrarEditarModal()" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">Cancelar</button>
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<script>
+    function abrirEditarModal(matricula, capacidad, chofer, itv, seguro, tacografo, activo) {
+        let form = document.getElementById("editarVehiculoForm");
+
+        // Actualizar la URL del formulario para enviar la matrícula
+        form.action = "/editar_vehiculo/" + encodeURIComponent(matricula);
+
+        // Llenar los campos con los valores recibidos
+        document.getElementById("matricula").value = matricula;
+        document.getElementById("capacidad").value = capacidad;
+        document.getElementById("chofer_habitual").value = chofer;
+        document.getElementById("caducidad_itv").value = itv;
+        document.getElementById("caducidad_seguro").value = seguro;
+        document.getElementById("caducidad_tacografo").value = tacografo;
+        document.getElementById("activo").checked = activo;
+
+        // Mostrar el modal
+        document.getElementById("modal_editar_vehiculo").classList.remove("hidden");
+    }
+
+    function cerrarEditarModal() {
+        document.getElementById("modal_editar_vehiculo").classList.add("hidden");
+    }
+</script>
+
+</body>
+</html>
+

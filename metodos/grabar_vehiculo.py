@@ -1,6 +1,6 @@
 from db import session
 from models import Vehiculo
-from flask import request, redirect, url_for, render_template
+from flask import request, redirect, url_for, render_template, flash
 import db
 from datetime import datetime
 
@@ -9,7 +9,7 @@ def ruta_grabar_vehiculo(app):
     def grabar_vehiculo():
         try:
             # Obtener los datos del formulario
-            matricula = request.form.get('matricula')
+            matricula = request.form.get('matricula').strip().upper()  # Convertir a mayúsculas y eliminar espacios
             capacidad = request.form.get('capacidad')
             caducidad_itv = request.form.get('caducidad_itv')
             caducidad_seguro = request.form.get('caducidad_seguro')
@@ -21,6 +21,12 @@ def ruta_grabar_vehiculo(app):
             caducidad_itv = datetime.strptime(caducidad_itv, formato_fecha).date() if caducidad_itv else None
             caducidad_seguro = datetime.strptime(caducidad_seguro, formato_fecha).date() if caducidad_seguro else None
             caducidad_tacografo = datetime.strptime(caducidad_tacografo, formato_fecha).date() if caducidad_tacografo else None
+
+            # Verificar si la matrícula ya existe en otro vehículo
+            vehiculo_existente = session.query(Vehiculo).filter_by(matricula=matricula).first()
+            if vehiculo_existente:
+                flash("Error: La matrícula ya está en uso por otro vehículo.", "error")
+                return redirect(url_for('vehiculos'))
 
             # Crear una nueva instancia de Vehiculo
             nuevo_vehiculo = Vehiculo(
@@ -35,16 +41,15 @@ def ruta_grabar_vehiculo(app):
             # Guardar en la base de datos
             session.add(nuevo_vehiculo)
             session.commit()
-            print("Vehículo grabado con éxito.")
+            flash("Vehículo grabado con éxito.", "success")
 
-            # Obtener todos los vehículos y renderizar la plantilla
-            vehiculos = db.session.query(Vehiculo).all()
-            return render_template("vehiculos.html", vehiculos=vehiculos)
+            # Redirigir a la lista de vehículos
+            return redirect(url_for('vehiculos'))
 
         except Exception as e:
             # Si hay un error, hacer rollback y mostrar mensaje de error
             session.rollback()
-            print(f"Error al grabar el vehículo: {e}")
+            flash(f"Error al grabar el vehículo: {e}", "error")
             return redirect(url_for('error_grabar_vehiculo'))
 
         finally:

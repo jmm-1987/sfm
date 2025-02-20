@@ -28,6 +28,7 @@ def ruta_editar_expedicion(app):
             expedicion.kg = request.form['kg']
             expedicion.reembolso = request.form['reembolso']
             expedicion.estado = request.form['estado']
+            expedicion.ingreso_distribucion = request.form['ingreso_distribucion']
 
             db.session.commit()
             return redirect(url_for('repartos'))

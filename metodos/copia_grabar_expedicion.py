@@ -1,10 +1,8 @@
 from db import session
-from metodos.calcular_ingreso_distribucion import calcular_ingreso_distribucion
-from models import Expedicion, Cliente
+from models import Expedicion
 from flask import request, redirect, url_for, render_template
 from datetime import datetime
 import db
-
 
 
 def ruta_grabar_expedidion(app):
@@ -41,6 +39,7 @@ def ruta_grabar_expedidion(app):
         reembolso = request.form.get('reembolso', 0.0)
         estado = request.form.get('estado', "almacen")
         ingreso_com_reembolso = request.form.get('ingreso_com_reembolso', 0.0)
+        ingreso_distribucion = request.form.get('ingreso_distribucion', 0.0)
         ingreso_cargo_adicional = request.form.get('ingreso_cargo_adicional', 0.0)
         coste_reparto = request.form.get('coste_reparto', 0.0)
         coste_arrastre = request.form.get('coste_arrastre', 0.0)
@@ -49,10 +48,6 @@ def ruta_grabar_expedidion(app):
 
         reembolso = float(reembolso) if reembolso else 0.0
         volumen = float(volumen) if volumen else 0.0  # Si el valor no es numérico, asigna 0.0
-
-        tarifa = db.session.query(Cliente.tarifa).filter(Cliente.alias == cliente).scalar()
-        print(tarifa)
-        ingreso_distribucion = calcular_ingreso_distribucion(tarifa,cod_postal_destinatario, bultos, tipo_bulto)
 
         # Crear la instancia de la clase Expedicion con los datos recibidos
         nueva_expedicion = Expedicion(
