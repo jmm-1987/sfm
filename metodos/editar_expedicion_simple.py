@@ -6,9 +6,9 @@ from db import session
 from models import Expedicion
 
 
-def ruta_editar_expedicion(app):
-    @app.route('/editar_expedicion/<int:id>', methods=['GET', 'POST'])
-    def editar_expedicion(id):
+def ruta_editar_expedicion_simple(app):
+    @app.route('/editar_expedicion_simple/<int:id>', methods=['GET', 'POST'])
+    def editar_expedicion_simple(id):
         expedicion = db.session.query(Expedicion).filter_by(id=id).first()
 
         if request.method == 'POST':
@@ -27,10 +27,8 @@ def ruta_editar_expedicion(app):
             expedicion.cod_postal_destinatario = request.form['cod_postal_destinatario']
             expedicion.bultos = request.form['bultos']
             expedicion.kg = request.form['kg']
-            expedicion.reembolso = request.form['reembolso']
             expedicion.estado = request.form['estado']
-            expedicion.ingreso_distribucion = request.form['ingreso_distribucion']
-            expedicion.ingreso_cargo_adicional = request.form['ingreso_cargo_adicional']
+
 
             db.session.commit()
             return redirect(url_for('repartos'))

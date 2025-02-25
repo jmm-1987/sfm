@@ -15,7 +15,9 @@ from metodos.entregar_expedicion import ruta_entregar_expedicion
 from metodos.consultar_expedicion import ruta_consultar_expedicion
 from metodos.editar_vehiculo import ruta_editar_vehiculo
 from metodos.editar_cliente import ruta_editar_cliente
-
+from metodos.exportar_pdf_facturacion import route_exportar_pdf_facturacion
+from metodos.retasar_ingreso_distribucion import ruta_retasar_ingreso_distribucion
+from metodos.editar_expedicion_simple import ruta_editar_expedicion_simple
 
 
 
@@ -40,6 +42,9 @@ ruta_entregar_expedicion(app)
 ruta_consultar_expedicion(app)
 ruta_editar_vehiculo(app)
 ruta_editar_cliente(app)
+route_exportar_pdf_facturacion(app)
+ruta_retasar_ingreso_distribucion(app)
+ruta_editar_expedicion_simple(app)
 
 
 
@@ -69,7 +74,7 @@ def login():
         password = request.form.get('password')
 
         # Aquí puedes verificar las credenciales desde una base de datos
-        if username == 'santi' and password == 'santi_chico25':  # Ejemplo
+        if (username == 'santi' and password == 'santi_chico25') or (username == 'oficina' and password == 'oficina25'):
             user = User(id=username)
             login_user(user)
             return redirect(url_for('repartos'))
@@ -141,7 +146,9 @@ def clientes():
 @login_required
 def facturacion():
     expediciones = db.session.query(Expedicion).all()  # Obtener todas las expediciones
-    return render_template("facturacion.html", expediciones=expediciones)
+    expedicion_id = request.args.get("id")
+    expedicion = get_expedicion_by_id(expedicion_id) if expedicion_id else None
+    return render_template("facturacion.html", expedicion=expedicion,expediciones=expediciones)
 
 @app.route('/produccion')
 @login_required

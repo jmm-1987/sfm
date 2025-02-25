@@ -26,7 +26,7 @@
             <a href="vehiculos" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Vehículos</a>
             <a href="clientes" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Clientes</a>
             <a href="produccion" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Producción</a>
-            <a href="facturacion" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Facturar</a>
+            <a href="facturacion" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Facturación</a>
             <a href="repartos" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Repartos</a>
             <a href="importar" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Importar</a>
             <button id="logoutBtn" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Cerrar Sesión</button>
@@ -49,6 +49,7 @@
                 <button onclick="clearFilters()" class="bg-red-500 text-white px-4 py-2 rounded-lg">Limpiar Filtros</button>
 
             </div>
+            <button onclick="exportarPDF()" class="bg-green-500 text-white px-4 py-2 rounded-lg">Exportar a PDF</button>
         </div>
 
         <!-- Sumario de expediciones -->
@@ -79,13 +80,15 @@
                 <th class="px-6 py-4 text-left">Entrega</th>
                 <th class="px-6 py-4 text-left">Distr.</th>
                 <th class="px-6 py-4 text-left">Cargo</th>
-                <th class="px-6 py-4 text-left">Acciones</th>
+                <th class="px-6 py-4 text-left">Ret.</th>
             </tr>
         </thead>
         <tbody>
             {% for expedicion in expediciones %}
             <tr class="bg-gray-100">
-                <td class="px-6 py-4">{{ expedicion.id }}</td>
+                <td class="px-6 py-4 text-blue-600 cursor-pointer" onclick="openEditModal('{{ expedicion.id }}')">
+            {{ expedicion.id }}
+        </td>
                 <td class="px-6 py-4">{{ expedicion.fecha.strftime('%d/%m/%Y') }}</td>
                 <td class="px-6 py-4">{{ expedicion.expedicion }}</td>
                 <td class="px-6 py-4">{{ expedicion.agencia_origen }}</td>
@@ -101,13 +104,14 @@
                 <td class="px-6 py-4">{{ expedicion.ingreso_distribucion }}</td>
                 <td class="px-6 py-4">{{ expedicion.ingreso_cargo_adicional }}</td>
                 <td class="px-6 py-4">
-    <button onclick="retasar({{ expedicion.id }})"
+    <button onclick="window.location.href='{{ url_for('retasar_ingreso_distribucion', expedicion_id=expedicion.id) }}'"
         class="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 relative group">
-        💰
-        <span class="absolute left-1/2 transform -translate-x-1/2 -top-8 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            Retasar
-        </span>
-    </button>
+    💰
+    <span class="absolute left-1/2 transform -translate-x-1/2 -top-8 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        Retasar
+    </span>
+</button>
+
 </td>
             </tr>
             {% else %}
@@ -203,6 +207,54 @@
     document.addEventListener("DOMContentLoaded", function () {
         updateSummary();
     });
+
+    function exportarPDF() {
+    let datos = [];
+    document.querySelectorAll('#expedicionTable tbody tr').forEach(row => {
+        if (row.style.display !== 'none') {  // Solo enviamos los datos visibles
+            let celdas = row.querySelectorAll("td");
+            datos.push({
+                id: celdas[0].textContent.trim(),
+                fecha: celdas[1].textContent.trim(),
+                expedicion: celdas[2].textContent.trim(),
+                agencia: celdas[3].textContent.trim(),
+                cliente: celdas[4].textContent.trim(),
+                remitente: celdas[5].textContent.trim(),
+                destinatario: celdas[6].textContent.trim(),
+                bultos: celdas[7].textContent.trim(),
+                kg: celdas[8].textContent.trim(),
+                volumen: celdas[9].textContent.trim(),
+                kg_conv: celdas[10].textContent.trim(),
+                estado: celdas[11].textContent.trim(),
+                fecha_entrega: celdas[12].textContent.trim(),
+                ingreso_distribucion: celdas[13].textContent.trim(),
+                ingreso_cargo_adicional: celdas[14].textContent.trim()
+            });
+        }
+    });
+
+    fetch('/exportar_pdf_facturacion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: datos })
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = "expediciones.pdf";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    })
+    .catch(error => console.error('Error exportando PDF:', error));
+}
+
+function openEditModal(expedicionId) {
+    window.location.href = "/repartos?id=" + expedicionId;
+}
+
 </script>
 
 </body>

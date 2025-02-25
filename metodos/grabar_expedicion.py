@@ -51,8 +51,8 @@ def ruta_grabar_expedidion(app):
         volumen = float(volumen) if volumen else 0.0  # Si el valor no es numérico, asigna 0.0
 
         tarifa = db.session.query(Cliente.tarifa).filter(Cliente.alias == cliente).scalar()
-        print(tarifa)
-        ingreso_distribucion = calcular_ingreso_distribucion(tarifa,cod_postal_destinatario, bultos, tipo_bulto)
+
+        ingreso_distribucion = calcular_ingreso_distribucion(tarifa,cod_postal_destinatario, bultos, tipo_bulto, kg_conv)
 
         # Crear la instancia de la clase Expedicion con los datos recibidos
         nueva_expedicion = Expedicion(
@@ -95,5 +95,5 @@ def ruta_grabar_expedidion(app):
         print("Expedición grabada con éxito.")
 
         #expediciones = db.session.query(Expedicion).all()  # Obtener todas las expediciones
-        return redirect(url_for('repartos'))
+        return redirect(url_for('facturacion'))
 

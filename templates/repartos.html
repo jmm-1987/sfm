@@ -19,9 +19,10 @@
 </head>
 <body class="bg-gray-50">
     <!-- Menú superior -->
-    <header class="bg-blue-600 p-2 flex justify-between items-center shadow-lg">
+    <header class="bg-gradient-to-r from-white to-blue-600 p-2 flex justify-between items-center shadow-lg transition-all duration-700">
+
         <div class="flex items-center">
-            <img src="{{ url_for('static', filename='img/logosfm.jpg') }}" alt="Logo" class="w-32 h-20">
+            <img src="{{ url_for('static', filename='img/logosfm.png') }}" alt="Logo" class="w-35 h-20">
         </div>
         <div class="flex items-center space-x-4">
             <!-- Barra de búsqueda en el menú -->
@@ -35,13 +36,53 @@
 </form>
 
 
-            <a href="vehiculos" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Vehículos</a>
-            <a href="clientes" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Clientes</a>
-            <a href="produccion" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Producción</a>
-            <a href="facturacion" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Facturación</a>
-            <a href="repartos" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Repartos</a>
-            <a href="importar" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Importar</a>
-            <button id="logoutBtn" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Cerrar Sesión</button>
+            {% if current_user.is_authenticated and current_user.id == 'santi' %}
+            <div class="flex space-x-4">
+    <!-- Vehículos -->
+    <a href="vehiculos" class="group flex flex-col items-center justify-center text-black hover:text-white hover:bg-blue-500 px-3 py-2 rounded-md focus:outline-none">
+      <span class="text-3xl">  🚚 </span>
+        <span class="opacity-0 group-hover:opacity-100 text-xs text-black group-hover:text-white transition-opacity mt-1">Vehículos</span>
+    </a>
+
+    <!-- Clientes -->
+    <a href="clientes" class="group flex flex-col items-center justify-center text-black hover:text-white hover:bg-blue-500 px-3 py-2 rounded-md focus:outline-none">
+        <span class="text-3xl"> 🧑‍🤝‍🧑 </span>
+        <span class="opacity-0 group-hover:opacity-100 text-xs text-black group-hover:text-white transition-opacity mt-1">Clientes</span>
+    </a>
+
+    <!-- Producción -->
+    <a href="produccion" class="group flex flex-col items-center justify-center text-black hover:text-white hover:bg-blue-500 px-3 py-2 rounded-md focus:outline-none">
+       <span class="text-3xl"> 🏭 </span>
+        <span class="opacity-0 group-hover:opacity-100 text-xs text-black group-hover:text-white transition-opacity mt-1">Producción</span>
+    </a>
+
+    <!-- Facturación -->
+    <a href="facturacion" class="group flex flex-col items-center justify-center text-black hover:text-white hover:bg-blue-500 px-3 py-2 rounded-md focus:outline-none">
+       <span class="text-3xl"> 💰 </span>
+        <span class="opacity-0 group-hover:opacity-100 text-xs text-black group-hover:text-white transition-opacity mt-1">Facturación</span>
+    </a>
+</div>
+
+        {% endif %}
+        <a href="repartos" class="group flex flex-col items-center justify-center text-white hover:text-white hover:bg-blue-500 px-3 py-2 rounded-md focus:outline-none">
+   <span class="text-3xl"> 📦 </span>
+    <span class="opacity-0 group-hover:opacity-100 text-xs text-white transition-opacity mt-1">Repartos</span>
+</a>
+
+       <a href="importar" class="group flex flex-col items-center justify-center text-white hover:text-white hover:bg-blue-500 px-3 py-2 rounded-md focus:outline-none">
+    <span class="text-3xl">📥</span>
+    <span class="opacity-0 group-hover:opacity-100 text-xs text-white transition-opacity mt-1">Importar</span>
+</a>
+
+
+        <!-- Botón de Cerrar Sesión con Ícono -->
+       <a href="{{ url_for('logout') }}" class="text-red hover:bg-black-500 px-3 py-1 rounded-md focus:outline-none" title="Cerrar sesión">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red hover:text-black-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-1V7m0 5h.01" />
+    </svg>
+</a>
+
+
         </div>
     </header>
 
@@ -150,7 +191,7 @@
                 <tbody>
     {% for expedicion in expediciones %}
     <tr class="bg-gray-100">
-        <td class="px-6 py-4 text-blue-600 cursor-pointer" onclick="openEditModal('{{ expedicion.id }}')">
+        <td class="px-6 py-4 text-blue-600 cursor-pointer" onclick="openEditModalSimple('{{ expedicion.id }}')">
             {{ expedicion.id }}
         </td>
         <td class="px-6 py-4">{{ expedicion.fecha.strftime('%d/%m/%Y') }}</td>
@@ -281,7 +322,7 @@ document.getElementById("expedicionForm").addEventListener("submit", function(ev
 });
 
 
-function openEditModal(expedicionId) {
+function openEditModalSimple(expedicionId) {
     window.location.href = "/repartos?id=" + expedicionId;
 }
 
@@ -349,6 +390,6 @@ function openEditModal(expedicionId) {
 
 
     {% include 'modal_grabar_expedicion.html' %}
-    {% include 'modal_editar_expedicion.html' %}
+    {% include 'modal_editar_expedicion_simple.html' %}
 </body>
 </html>

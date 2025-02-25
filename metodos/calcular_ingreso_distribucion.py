@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def calcular_ingreso_distribucion(tarifa, cod_postal_destinatario, bultos, tipo_bulto):
+def calcular_ingreso_distribucion(tarifa, cod_postal_destinatario, bultos, tipo_bulto,kg_conv):
     try:
         # Ruta del archivo Excel
         file_path = "static/tarifas/06PX25_.xlsx"
@@ -11,6 +11,8 @@ def calcular_ingreso_distribucion(tarifa, cod_postal_destinatario, bultos, tipo_
 
         # Obtener los dos primeros dígitos del código postal
         cod_postal_prefijo = str(cod_postal_destinatario)[:2]
+
+        kg_conv = kg_conv
 
         # Buscar la fila donde está el código postal en la primera columna
         fila_cp = df[df.iloc[:, 0].astype(str).str.startswith(cod_postal_prefijo)]
