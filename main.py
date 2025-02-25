@@ -92,6 +92,12 @@ def vehiculos():
     vehiculos = db.session.query(Vehiculo).all()  # Obtener todas las expediciones
     return render_template("vehiculos.html", vehiculos=vehiculos)
 
+@app.route('/importaciones')
+@login_required
+def importaciones():
+
+    return render_template("importaciones.html")
+
 
 @app.route('/repartos')
 @login_required
