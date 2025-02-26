@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, jsonify
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 import db
 from datetime import date
@@ -18,6 +18,7 @@ from metodos.editar_cliente import ruta_editar_cliente
 from metodos.exportar_pdf_facturacion import route_exportar_pdf_facturacion
 from metodos.retasar_ingreso_distribucion import ruta_retasar_ingreso_distribucion
 from metodos.editar_expedicion_simple import ruta_editar_expedicion_simple
+from metodos.obtener_datos_cliente_js import ruta_obtener_datos_cliente_js
 
 
 
@@ -45,6 +46,7 @@ ruta_editar_cliente(app)
 route_exportar_pdf_facturacion(app)
 ruta_retasar_ingreso_distribucion(app)
 ruta_editar_expedicion_simple(app)
+ruta_obtener_datos_cliente_js(app)
 
 
 
@@ -136,8 +138,6 @@ def get_cliente_by_alias(cliente_alias):
     cliente = db.session.query(Cliente).filter_by(alias=cliente_alias).first()
 
     return cliente
-
-
 
 @app.route('/clientes')
 @login_required

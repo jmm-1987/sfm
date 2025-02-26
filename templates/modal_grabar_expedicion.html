@@ -27,15 +27,14 @@
                         </div>
                         <div class="col-span-2">
     <label class="block text-sm mb-1">Cliente</label>
-    <select name="cliente" class="w-full p-2 border rounded" required>
-        <!-- Opción por defecto vacía -->
+    <select name="cliente" id="clienteSelect" class="w-full p-2 border rounded" required>
         <option value="" disabled selected>Selecciona un cliente</option>
-
         {% for cliente in clientes %}
             <option value="{{ cliente.alias }}">{{ cliente.alias }}</option>
         {% endfor %}
     </select>
 </div>
+
 
                        <div class="col-span-2">
     <label class="block text-sm mb-1">Agencia origen</label>
@@ -186,6 +185,34 @@ document.addEventListener("DOMContentLoaded", function () {
         let hoy = new Date().toISOString().split('T')[0]; // Obtiene la fecha en formato YYYY-MM-DD
         document.getElementById("fecha").value = hoy;
     });
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const clienteSelect = document.getElementById("clienteSelect");
+
+    clienteSelect.addEventListener("change", function () {
+        const selectedAlias = clienteSelect.value;
+
+        if (selectedAlias) {
+            fetch(`/get_cliente_data?alias=${selectedAlias}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error("Error:", data.error);
+                        return;
+                    }
+
+                    // Rellenar los campos del remitente con los datos del cliente
+                    document.querySelector("input[name='remitente']").value = data.remitente || "";
+                    document.querySelector("input[name='dir_remitente']").value = data.dir_remitente || "";
+                    document.querySelector("input[name='cod_postal_remitente']").value = data.cod_postal_remitente || "";
+                    document.querySelector("input[name='poblacion_remitente']").value = data.poblacion_remitente || "";
+                    document.querySelector("input[name='provincia_remitente']").value = data.provincia_remitente || "";
+
+                })
+                .catch(error => console.error("Error en la solicitud AJAX:", error));
+        }
+    });
+});
 </script>
 </body>
 </html>
