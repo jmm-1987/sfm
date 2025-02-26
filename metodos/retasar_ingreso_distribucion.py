@@ -20,7 +20,9 @@ def ruta_retasar_ingreso_distribucion(app):
             return jsonify({"error": "Cliente no encontrado"}), 404
 
         # Extraer datos necesarios para calcular el ingreso de distribución
-        codigo_postal_destinatario = expedicion.cod_postal_destinatario
+        codigo_postal_destinatario = str(expedicion.cod_postal_destinatario).zfill(5)
+
+
         bultos = expedicion.bultos
         tipo_bulto = expedicion.tipo_bulto
         kg_conv = expedicion.kg_conv
@@ -29,6 +31,7 @@ def ruta_retasar_ingreso_distribucion(app):
         # Calcular nuevo ingreso de distribución
         ingreso_distribucion = calcular_ingreso_distribucion(tarifa, codigo_postal_destinatario, bultos, tipo_bulto, kg_conv)
 
+        print(ingreso_distribucion)
         # Asignar el nuevo valor y guardar cambios en la base de datos
         expedicion.ingreso_distribucion = ingreso_distribucion
         session.commit()  # Guarda los cambios

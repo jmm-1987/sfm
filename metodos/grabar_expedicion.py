@@ -95,5 +95,5 @@ def ruta_grabar_expedidion(app):
         print("Expedición grabada con éxito.")
 
         #expediciones = db.session.query(Expedicion).all()  # Obtener todas las expediciones
-        return redirect(url_for('facturacion'))
+        return redirect(url_for('repartos'))
 
