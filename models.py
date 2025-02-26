@@ -75,7 +75,7 @@ class Expedicion(Base):
                  cod_postal_remitente,
                  poblacion_remitente, provincia_remitente, pais_remitente, destinatario, dir_destinatario,
                  cod_postal_destinatario, poblacion_destinatario, provincia_destinatario, pais_destinatario, bultos, kg,
-                 volumen, kg_conv, incidencia_tipo=None, incidencia_ampliacion=None,
+                 volumen=0, kg_conv=kg, incidencia_tipo=None, incidencia_ampliacion=None,
                  tipo_bulto=None, reembolso=0.0, estado="almacen", facturada=False, asignada_a=None, viaje=None,
                  fecha_asignacion=None, fecha_entrega=None, fecha_incidencia = None,
                  ingreso_com_reembolso=0.0, ingreso_distribucion=0.0, ingreso_cargo_adicional=0.0, coste_reparto=0.0,
@@ -101,7 +101,7 @@ class Expedicion(Base):
         self.bultos = bultos
         self.kg = kg
         self.volumen = volumen
-        self.kg_conv = kg_conv
+        self.kg_conv = kg
         self.tipo_bulto = tipo_bulto
         self.reembolso = reembolso
         self.estado = estado

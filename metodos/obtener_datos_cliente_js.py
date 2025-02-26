@@ -22,7 +22,7 @@ def ruta_obtener_datos_cliente_js(app):
         return jsonify({
             "remitente": cliente.alias,
             "dir_remitente": cliente.direccion,
-            "cod_postal_remitente": cliente.codigo_postal,
+            "cod_postal_remitente": str(cliente.codigo_postal).zfill(5),
             "poblacion_remitente": cliente.poblacion,
             "provincia_remitente": cliente.provincia,
 

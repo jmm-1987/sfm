@@ -141,11 +141,11 @@
                         </div>
                         <div>
                             <label class="block text-sm mb-1">Volumen</label>
-                            <input type="number" step="0.01" name="volumen" class="w-full p-2 border rounded" required>
+                            <input type="number" step="0.01" name="volumen" class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed text-gray-500" readonly>
                         </div>
                         <div>
                             <label class="block text-sm mb-1">Kg Convertidos</label>
-                            <input type="number" name="kg_conv" class="w-full p-2 border rounded" required>
+                            <input type="number" name="kg_conv" class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed text-gray-500" readonly>
                         </div>
                         <div>
     <label class="block text-sm mb-1">Tipo de Bulto</label>
@@ -162,10 +162,9 @@
                         </div>
                         <div class="col-span-2">
                             <label class="block text-sm mb-1">Estado</label>
-                            <select name="estado" class="w-full p-2 border rounded">
+                            <select name="estado" class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed text-gray-500" readonly>
                                 <option value="almacen">Almacén</option>
-                                <option value="en reparto">En Reparto</option>
-                                <option value="entregado">Entregado</option>
+
                             </select>
                         </div>
                     </div>
