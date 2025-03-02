@@ -15,6 +15,7 @@ def ruta_grabar_cliente(app):
             provincia = request.form.get('provincia')
             pais = request.form.get('pais')
             telefono = request.form.get('telefono')
+            cif = request.form.get('cif')
             notas = request.form.get('notas')
             tarifa = request.form.get('tarifa')
             email = request.form.get('email')
@@ -44,6 +45,7 @@ def ruta_grabar_cliente(app):
                 telefono=telefono,
                 tarifa=tarifa,
                 email=email,
+                cid=cif,
                 notas=notas,
                 activo=activo
             )

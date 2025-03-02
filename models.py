@@ -20,7 +20,7 @@ class Expedicion(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     fecha = Column(DateTime, nullable=False)
-    expedicion = Column(Integer, nullable=False)
+    expedicion = Column(String, nullable=False)
     agencia_origen = Column(String(200), nullable=False)
     agencia_destino = Column(String(200), nullable=False)
     cliente = Column(String(200), nullable=False)
@@ -177,13 +177,14 @@ class Cliente(Base):
     poblacion = Column(String(200), nullable=True)
     provincia = Column(String(200), nullable=True)
     pais = Column(String(100), nullable=True)
+    cif = Column(String(10),nullable=True)
     email = Column(String(100), nullable=True)
     telefono = Column(Integer, nullable=True)
     tarifa = Column(String(100), nullable=True)
     notas = Column(String(300), nullable=True)
     activo = Column(Boolean, default=True, nullable=False)
 
-    def __init__(self, alias, nombre_fiscal, direccion=None, codigo_postal=None, poblacion=None, provincia=None, pais=None, email=None, telefono=None, tarifa=None, notas =None, activo=True):
+    def __init__(self, alias, nombre_fiscal, direccion=None, codigo_postal=None, poblacion=None, provincia=None, pais=None, cif=None, email=None, telefono=None, tarifa=None, notas =None, activo=True):
         self.alias = alias
         self.nombre_fiscal = nombre_fiscal
         self.direccion = direccion
@@ -191,6 +192,7 @@ class Cliente(Base):
         self.poblacion = poblacion
         self.provincia = provincia
         self.pais = pais
+        self.cif = cif
         self.email = email
         self.telefono = telefono
         self.notas = notas

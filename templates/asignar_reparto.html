@@ -74,10 +74,12 @@
         <tbody>
             {% for expedicion in expediciones_asignadas %}
             <tr class="hover:bg-gray-100">
-                <td class="border px-4 py-2">{{ expedicion.fecha }}</td>
+                <td class="border px-4 py-2">
+                {{ expedicion.fecha.strftime('%d/%m/%Y') if expedicion.fecha else '' }}
+                </td>
                 <td class="border px-4 py-2">{{ expedicion.cliente }}</td>
                 <td class="border px-4 py-2">{{ expedicion.destinatario }}</td>
-                <td class="border px-4 py-2">{{ expedicion.poblacion }}</td>
+                <td class="border px-4 py-2">{{ expedicion.poblacion_destinatario }}</td>
                 <td class="border px-4 py-2">{{ expedicion.bultos }}</td>
                 <td class="border px-4 py-2">{{ expedicion.kg }}</td>
             </tr>

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request, jsonify
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 import db
-from datetime import date
+from datetime import date, datetime
 from models import User, Expedicion, Cliente, Vehiculo
 from metodos.grabar_expedicion import ruta_grabar_expedidion
 from metodos.grabar_cliente import ruta_grabar_cliente
@@ -19,7 +19,8 @@ from metodos.exportar_pdf_facturacion import route_exportar_pdf_facturacion
 from metodos.retasar_ingreso_distribucion import ruta_retasar_ingreso_distribucion
 from metodos.editar_expedicion_simple import ruta_editar_expedicion_simple
 from metodos.obtener_datos_cliente_js import ruta_obtener_datos_cliente_js
-
+from metodos.eliminar_expedicion import ruta_eliminar_expedicion
+from metodos.exportar_pdf_listado import ruta_exportar_pdf_listado
 
 
 # Configuración de la app Flask
@@ -47,6 +48,8 @@ route_exportar_pdf_facturacion(app)
 ruta_retasar_ingreso_distribucion(app)
 ruta_editar_expedicion_simple(app)
 ruta_obtener_datos_cliente_js(app)
+ruta_eliminar_expedicion(app)
+ruta_exportar_pdf_listado(app)
 
 
 
@@ -91,8 +94,18 @@ def login():
 @app.route('/vehiculos')
 @login_required
 def vehiculos():
-    vehiculos = db.session.query(Vehiculo).all()  # Obtener todas las expediciones
+    vehiculos = db.session.query(Vehiculo).filter(Vehiculo.activo == True).all()
     return render_template("vehiculos.html", vehiculos=vehiculos)
+
+
+@app.route('/vehiculos_inactivos')
+@login_required
+def vehiculos_inactivos():
+    # Filtrar solo los vehículos inactivos
+    vehiculos = db.session.query(Vehiculo).filter(Vehiculo.activo == False).all()
+
+    return render_template("vehiculos.html", vehiculos=vehiculos, mostrando_inactivos=True)
+
 
 @app.route('/importaciones')
 @login_required
@@ -104,7 +117,7 @@ def importaciones():
 @app.route('/repartos')
 @login_required
 def repartos():
-    vehiculos = db.session.query(Vehiculo.matricula).all()
+    vehiculos = db.session.query(Vehiculo.matricula).filter(Vehiculo.activo == True).all()
     clientes = db.session.query(Cliente.alias).all()
     agencias = ["SFM","PALLEX","SEYTRA","TyD","TEDi","REDPALLETS"]
     tipo_bulto = ["MQTR","QTR","MLIGHT","HALF","LIGHT","FULL","MEGAFULL"]
@@ -116,6 +129,13 @@ def repartos():
     return render_template("repartos.html", expediciones=expediciones, clientes=clientes,
                            vehiculos=vehiculos, expedicion=expedicion, agencias=agencias, fecha_actual=fecha_actual,
                            tipo_bulto=tipo_bulto)
+
+@app.route('/impresion_listados_reparto')
+@login_required
+def impresion_listados_reparto():
+    vehiculos = db.session.query(Vehiculo.matricula).filter(Vehiculo.activo == True).all()
+    today = datetime.today().strftime('%Y-%m-%d')
+    return render_template("impresion_listados_reparto.html",today=today, vehiculos=vehiculos)
 
 @app.route("/get_expedicion_by_id")
 def get_expedicion_by_id(expedicion_id):
@@ -154,7 +174,11 @@ def facturacion():
     expediciones = db.session.query(Expedicion).all()  # Obtener todas las expediciones
     expedicion_id = request.args.get("id")
     expedicion = get_expedicion_by_id(expedicion_id) if expedicion_id else None
-    return render_template("facturacion.html", expedicion=expedicion,expediciones=expediciones)
+    clientes = db.session.query(Cliente.alias).all()
+    agencias = ["SFM", "PALLEX", "SEYTRA", "TyD", "TEDi", "REDPALLETS"]
+    tipo_bulto = ["MQTR", "QTR", "MLIGHT", "HALF", "LIGHT", "FULL", "MEGAFULL"]
+    return render_template("facturacion.html", expedicion=expedicion,expediciones=expediciones,
+                           clientes=clientes,agencias=agencias, tipo_bulto=tipo_bulto)
 
 @app.route('/produccion')
 @login_required
