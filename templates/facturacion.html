@@ -93,17 +93,16 @@
         <!-- Contenedor de filtros -->
         <div class="flex flex-wrap gap-4 mb-4">
             <input type="text" id="filterId" class="p-2 border rounded-lg" placeholder="Filtrar por ID">
-            <input type="text" id="filterFecha" class="p-2 border rounded-lg" placeholder="Filtrar por Fecha (dd/mm/aaaa)">
+            <input type="date" id="filterFechaDesde" class="p-2 border rounded-lg" placeholder="Desde">
+            <input type="date" id="filterFechaHasta" class="p-2 border rounded-lg" placeholder="Hasta">
             <input type="text" id="filterExpedicion" class="p-2 border rounded-lg" placeholder="Filtrar por Expedición">
             <input type="text" id="filterAgencia" class="p-2 border rounded-lg" placeholder="Filtrar por Agencia">
             <input type="text" id="filterCliente" class="p-2 border rounded-lg" placeholder="Filtrar por Cliente">
-
-            <div class="flex items-center gap-2">
-                <button onclick="clearFilters()" class="bg-red-500 text-white px-4 py-2 rounded-lg">Limpiar Filtros</button>
-
-            </div>
+            <input type="text" id="filterEstado" class="p-2 border rounded-lg" placeholder="Filtrar por Estado">
+            <button onclick="clearFilters()" class="bg-red-500 text-white px-4 py-2 rounded-lg">Limpiar Filtros</button>
             <button onclick="exportarPDF()" class="bg-green-500 text-white px-4 py-2 rounded-lg">Exportar a PDF</button>
         </div>
+    </div>
 
         <!-- Sumario de expediciones -->
 <div id="summary" class="bg-blue-200 p-4 rounded-lg mb-4 text-blue-900 font-semibold">
@@ -215,47 +214,48 @@
     }
 
     function filterTable() {
-        const filterId = document.getElementById('filterId').value.toLowerCase();
-        const filterFecha = document.getElementById('filterFecha').value.toLowerCase();
-        const filterExpedicion = document.getElementById('filterExpedicion').value.toLowerCase();
-        const filterAgencia = document.getElementById('filterAgencia').value.toLowerCase();
-        const filterCliente = document.getElementById('filterCliente').value.toLowerCase();
+            const filterId = document.getElementById('filterId').value.toLowerCase();
+            const filterFechaDesde = document.getElementById('filterFechaDesde').value;
+            const filterFechaHasta = document.getElementById('filterFechaHasta').value;
+            const filterExpedicion = document.getElementById('filterExpedicion').value.toLowerCase();
+            const filterAgencia = document.getElementById('filterAgencia').value.toLowerCase();
+            const filterCliente = document.getElementById('filterCliente').value.toLowerCase();
+            const filterEstado = document.getElementById('filterEstado').value.toLowerCase();
 
-        const rows = document.querySelectorAll('#expedicionTable tbody tr');
+            document.querySelectorAll('#expedicionTable tbody tr').forEach(row => {
+                const id = row.cells[0].textContent.toLowerCase();
+                const fecha = row.cells[1].textContent.split('/').reverse().join('-');
+                const expedicion = row.cells[2].textContent.toLowerCase();
+                const agencia = row.cells[3].textContent.toLowerCase();
+                const cliente = row.cells[4].textContent.toLowerCase();
+                const estado = row.cells[11].textContent.toLowerCase();
 
-        rows.forEach(row => {
-            const id = row.cells[0].textContent.toLowerCase();
-            const fecha = row.cells[1].textContent.toLowerCase();
-            const expedicion = row.cells[2].textContent.toLowerCase();
-            const agencia = row.cells[3].textContent.toLowerCase();
-            const cliente = row.cells[4].textContent.toLowerCase();
+                let fechaValida = true;
+                if (filterFechaDesde && fecha < filterFechaDesde) fechaValida = false;
+                if (filterFechaHasta && fecha > filterFechaHasta) fechaValida = false;
 
-            if (id.includes(filterId) &&
-                fecha.includes(filterFecha) &&
-                expedicion.includes(filterExpedicion) &&
-                agencia.includes(filterAgencia) &&
-                cliente.includes(filterCliente)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+                if (id.includes(filterId) && fechaValida && expedicion.includes(filterExpedicion) && agencia.includes(filterAgencia) && cliente.includes(filterCliente)&& estado.includes(filterEstado)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        document.querySelectorAll('.p-2.border').forEach(input => {
+            input.addEventListener('input', filterTable);
         });
 
-        updateSummary();
-    }
-
-    document.querySelectorAll('.p-2.border').forEach(input => {
-        input.addEventListener('input', filterTable);
-    });
-
-    function clearFilters() {
-        document.getElementById('filterId').value = "";
-        document.getElementById('filterFecha').value = "";
-        document.getElementById('filterExpedicion').value = "";
-        document.getElementById('filterAgencia').value = "";
-        document.getElementById('filterCliente').value = "";
-        filterTable();
-    }
+        function clearFilters() {
+            document.getElementById('filterId').value = "";
+            document.getElementById('filterFechaDesde').value = "";
+            document.getElementById('filterFechaHasta').value = "";
+            document.getElementById('filterExpedicion').value = "";
+            document.getElementById('filterAgencia').value = "";
+            document.getElementById('filterCliente').value = "";
+            document.getElementById('filterEstado').value = "";
+            filterTable();
+        }
 
     document.addEventListener("DOMContentLoaded", function () {
         updateSummary();
