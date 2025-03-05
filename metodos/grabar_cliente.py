@@ -45,7 +45,7 @@ def ruta_grabar_cliente(app):
                 telefono=telefono,
                 tarifa=tarifa,
                 email=email,
-                cid=cif,
+                cif=cif,
                 notas=notas,
                 activo=activo
             )
