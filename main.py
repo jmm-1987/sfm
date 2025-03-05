@@ -163,10 +163,20 @@ def get_cliente_by_alias(cliente_alias):
 @login_required
 def clientes():
     tarifas=["no aplica","06PX25_"]
-    clientes = db.session.query(Cliente).all()  # Obtener todas las expediciones
+    clientes = db.session.query(Cliente).filter(Cliente.activo == True).all()
     cliente_alias = request.args.get("alias")
     cliente = get_cliente_by_alias(cliente_alias) if cliente_alias else None
     return render_template("clientes.html", clientes=clientes, tarifas=tarifas, cliente=cliente)
+
+@app.route('/clientes_inactivos')
+@login_required
+def clientes_inactivos():
+    # Filtrar solo los vehículos inactivos
+    clientes = db.session.query(Cliente).filter(Cliente.activo == False).all()
+    cliente_alias = request.args.get("alias")
+    cliente = get_cliente_by_alias(cliente_alias) if cliente_alias else None
+
+    return render_template("clientes.html", cliente=cliente, clientes=clientes, mostrando_inactivos=True)
 
 @app.route('/facturacion')
 @login_required
