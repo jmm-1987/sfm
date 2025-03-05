@@ -19,10 +19,7 @@ def ruta_eliminar_expedicion(app):
 
         if expedicion:
             # Verificar el estado de la expedición
-            if expedicion.estado in ["asignada", "entregado"]:
-                flash(f"No se puede eliminar la expedición {expedicion_id} porque su estado es '{expedicion.estado}'.", "error")
-                print(f"Intento de eliminación fallido: Expedición {expedicion_id} con estado '{expedicion.estado}'.")
-                return redirect(url_for('repartos'))
+
 
             # Eliminar la expedición y confirmar cambios
             session.delete(expedicion)

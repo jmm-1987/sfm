@@ -254,18 +254,16 @@
 
             </div>
         </form>
-        {% if expedicion and expedicion.estado not in ["en reparto", "entregado"] %}
+
     <form method="POST" action="{{ url_for('eliminar_expedicion') }}" class="mt-4">
         <input type="hidden" name="expedicion" value="{{ expedicion.expedicion }}">
         <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
             Eliminar Expedición
         </button>
     </form>
-{% else %}
-    <p class="text-gray-500 mt-4">
-        No se puede eliminar esta expedición porque su estado es <strong>"{{ expedicion.estado }}"</strong>.
-    </p>
-{% endif %}
+
+
+
     </div>
 </div>
 
