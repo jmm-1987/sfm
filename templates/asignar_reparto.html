@@ -24,13 +24,8 @@
             <img src="{{ url_for('static', filename='img/logosfm.jpg') }}" alt="Logo" class="w-32 h-20">
         </div>
         <div class="flex items-center space-x-4">
-            <a href="vehiculos" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Vehículos</a>
-            <a href="clientes" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Clientes</a>
-            <a href="produccion" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Producción</a>
-            <a href="facturacion" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Facturación</a>
-            <a href="repartos" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Repartos</a>
-            <a href="importar" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Importar</a>
-            <button id="logoutBtn" class="text-white font-semibold hover:bg-blue-500 px-3 py-1 rounded-md focus:outline-none">Cerrar Sesión</button>
+
+
         </div>
     </header>
 
@@ -70,7 +65,6 @@
                 <th class="px-4 py-2">Población</th>
                 <th class="px-4 py-2">Bultos</th>
                 <th class="px-4 py-2">Kg</th>
-                <th class="px-4 py-2">X</th>
             </tr>
         </thead>
         <tbody>
@@ -85,16 +79,6 @@
                 <td class="border px-4 py-2">{{ expedicion.poblacion_destinatario }}</td>
                 <td class="border px-4 py-2">{{ expedicion.bultos }}</td>
                 <td class="border px-4 py-2">{{ expedicion.kg }}</td>
-                <td class="border px-4 py-2">
-                    <form action="{{ url_for('desasignar_expedicion') }}" method="post">
-                        <input type="hidden" name="expedicion" value="{{ expedicion.expedicion }}">
-                        <input type="hidden" name="fecha_asignacion" value="{{ expedicion.fecha_asignacion }}">
-                        <input type="hidden" name="matricula" value="{{ expedicion.asignada_a }}">
-                        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
-                              ✖
-                        </button>
-                    </form>
-                </td>
             </tr>
             {% endfor %}
         </tbody>

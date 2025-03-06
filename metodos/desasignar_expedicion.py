@@ -6,11 +6,11 @@ from datetime import datetime
 def ruta_desasignar_expedicion(app):
     @app.route('/desasignar_expedicion', methods=['POST'])
     def desasignar_expedicion():
-        print("aldo")
+
         expedicion_form = request.form.get('expedicion') or request.args.get('fecha_asignacion')
         vehiculo = request.form.get('matricula')
 
-        print(expedicion_form,vehiculo)
+
 
         expedicion_id = db.session.query(Expedicion).filter_by(expedicion=expedicion_form).first()
 
@@ -22,8 +22,8 @@ def ruta_desasignar_expedicion(app):
         # Actualizar los campos de la expedición
         fecha_str = request.form['fecha_asignacion']
         fecha_asignacion = datetime.strptime(fecha_str.split()[0], "%Y-%m-%d")
-        print(fecha_asignacion)
-        fecha_asignacion_limpia = ""
+
+        fecha_asignacion_limpia = None
 
         expedicion.asignada_a = ""
         expedicion.estado = "almacen"

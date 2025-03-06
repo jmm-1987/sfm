@@ -206,8 +206,21 @@
                 <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Guardar</button>
             </div>
         </form>
+        {% if expedicion.estado == "en reparto" %}
+    <form method="POST" action="{{ url_for('desasignar_expedicion') }}" class="mt-4">
+        <input type="hidden" name="expedicion" value="{{ expedicion.expedicion }}">
+        <input type="hidden" name="fecha_asignacion" value="{{ expedicion.fecha_asignacion }}">
+        <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
+            Quitar de reparto
+        </button>
+    </form>
+{% endif %}
+
     </div>
+
 </div>
+
+
 
 <script>
 function closeEditModal() {
