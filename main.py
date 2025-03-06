@@ -1,6 +1,7 @@
-from flask import Flask, render_template, redirect, url_for, request, jsonify
+from flask import Flask, render_template, redirect, url_for, request, jsonify, send_file
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 import db
+import os
 from datetime import date, datetime
 from models import User, Expedicion, Cliente, Vehiculo
 from metodos.grabar_expedicion import ruta_grabar_expedidion
@@ -27,6 +28,8 @@ from metodos.desasignar_expedicion import ruta_desasignar_expedicion
 # Configuración de la app Flask
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '78587fgrtyth'
+
+ruta_db = ("database/sfm.db")
 
 # Configuración de Flask-Login
 login_manager = LoginManager()
@@ -203,6 +206,31 @@ def produccion():
 def cerrar_repartos():
     expediciones_asignadas = db.session.query(Expedicion).filter(Expedicion.estado == "en reparto").all()
     return render_template("cerrar_repartos.html", expediciones_asignadas=expediciones_asignadas)
+
+@app.route("/descargar", methods=["GET"])
+def descargar_db():
+    if os.path.exists(ruta_db):
+        return send_file(ruta_db, as_attachment=True)
+    else:
+        return {"error": "Base de datos no encontrada"}, 404
+
+@app.route("/subir_bd", methods=["GET"])
+def subir_base():
+    return render_template("subir_bd.html")
+
+@app.route("/subir", methods=["POST"])
+def subir_db():
+    if "file" not in request.files:
+        return {"error": "No se encontró archivo en la petición"}, 400
+
+    file = request.files["file"]
+
+    if file.filename == "":
+        return {"error": "Nombre de archivo inválido"}, 400
+
+    file.save(ruta_db)  # Sobrescribe el archivo existente
+    return {"message": "Base de datos actualizada correctamente"}
+
 
 
 
