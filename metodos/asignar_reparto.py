@@ -17,16 +17,11 @@ def ruta_asignar_reparto(app):
             fecha_asignacion = datetime.strptime(fecha_asignacion_str, '%Y-%m-%d')
 
 
-        print(vehiculo)
-        print(fecha_asignacion)
-
         expediciones_asignadas = db.session.query(Expedicion).filter(
 
             Expedicion.asignada_a == vehiculo,
             Expedicion.fecha_asignacion == fecha_asignacion
         ).all()
-
-        print(expediciones_asignadas)
 
 
         # Redirigir con los parámetros necesarios para restaurar el estado

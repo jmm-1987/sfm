@@ -64,11 +64,13 @@
         <thead>
             <tr class="bg-blue-100 text-blue-700">
                 <th class="px-4 py-2">Fecha</th>
+                <th class="px-4 py-2">Expedicion</th>
                 <th class="px-4 py-2">Cliente</th>
                 <th class="px-4 py-2">Destinatario</th>
                 <th class="px-4 py-2">Población</th>
                 <th class="px-4 py-2">Bultos</th>
                 <th class="px-4 py-2">Kg</th>
+                <th class="px-4 py-2">X</th>
             </tr>
         </thead>
         <tbody>
@@ -77,11 +79,22 @@
                 <td class="border px-4 py-2">
                 {{ expedicion.fecha.strftime('%d/%m/%Y') if expedicion.fecha else '' }}
                 </td>
+                <td class="border px-4 py-2">{{ expedicion.expedicion }}</td>
                 <td class="border px-4 py-2">{{ expedicion.cliente }}</td>
                 <td class="border px-4 py-2">{{ expedicion.destinatario }}</td>
                 <td class="border px-4 py-2">{{ expedicion.poblacion_destinatario }}</td>
                 <td class="border px-4 py-2">{{ expedicion.bultos }}</td>
                 <td class="border px-4 py-2">{{ expedicion.kg }}</td>
+                <td class="border px-4 py-2">
+                    <form action="{{ url_for('desasignar_expedicion') }}" method="post">
+                        <input type="hidden" name="expedicion" value="{{ expedicion.expedicion }}">
+                        <input type="hidden" name="fecha_asignacion" value="{{ expedicion.fecha_asignacion }}">
+                        <input type="hidden" name="matricula" value="{{ expedicion.asignada_a }}">
+                        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
+                              ✖
+                        </button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

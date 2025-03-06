@@ -21,6 +21,7 @@ from metodos.editar_expedicion_simple import ruta_editar_expedicion_simple
 from metodos.obtener_datos_cliente_js import ruta_obtener_datos_cliente_js
 from metodos.eliminar_expedicion import ruta_eliminar_expedicion
 from metodos.exportar_pdf_listado import ruta_exportar_pdf_listado
+from metodos.desasignar_expedicion import ruta_desasignar_expedicion
 
 
 # Configuración de la app Flask
@@ -50,6 +51,7 @@ ruta_editar_expedicion_simple(app)
 ruta_obtener_datos_cliente_js(app)
 ruta_eliminar_expedicion(app)
 ruta_exportar_pdf_listado(app)
+ruta_desasignar_expedicion(app)
 
 
 

@@ -32,9 +32,10 @@ def ruta_editar_expedicion(app):
             expedicion.ingreso_distribucion = request.form['ingreso_distribucion']
             expedicion.ingreso_cargo_adicional = request.form['ingreso_cargo_adicional']
 
+
             db.session.commit()
             return redirect(url_for('repartos'))
 
         expediciones = db.session.query(Expedicion).all()
 
-        return render_template('repartos.html', expediciones=expediciones, expedidion=expedicion)
+        return render_template('facturacion.html', expediciones=expediciones, expedidion=expedicion)

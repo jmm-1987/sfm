@@ -12,7 +12,8 @@ def ruta_asignar_expedicion(app):
         expedicion_id = db.session.query(Expedicion).filter_by(expedicion=expedicion_form).first()
 
         if not expedicion_id:
-            return redirect(url_for('repartos', error='Expedición no encontrada'))
+            return redirect(url_for('asignar_reparto', error='Expedición no encontrada'))
+
 
         expedicion = db.session.query(Expedicion).filter_by(id=expedicion_id.id).first()
 
@@ -30,7 +31,7 @@ def ruta_asignar_expedicion(app):
             Expedicion.asignada_a == vehiculo
         ).all()
 
-        print(expediciones_asignadas)
+
 
         # Redirigir con los parámetros necesarios para restaurar el estado
         return redirect(url_for('asignar_reparto', matricula=vehiculo, fecha_asignacion=str(fecha_asignacion)))
