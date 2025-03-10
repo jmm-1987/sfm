@@ -81,7 +81,7 @@ class Expedicion(Base):
                  fecha_asignacion=None, fecha_entrega=None, fecha_incidencia = None,
                  ingreso_com_reembolso=0.0, ingreso_distribucion=0.0, ingreso_cargo_adicional=0.0, coste_reparto=0.0,
                  coste_arrastre=0.0, coste_removido=0.0,dev_alb_firmado=False,
-                 coste_distribucion=0.0, tlf_remitente=0, tlf_destinatario=0, albaran_entrega=False, albaran_cliente=False, observaciones=None):
+                 coste_distribucion=0.0, tlf_remitente=0, tlf_destinatario=0, albaran_entrega=False, albaran_cliente=False, observaciones=""):
         self.fecha = fecha
         self.expedicion = expedicion
         self.agencia_origen = agencia_origen

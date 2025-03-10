@@ -98,10 +98,11 @@
         <!-- Contenedor de filtros -->
         <div class="flex flex-wrap gap-4 mb-4">
             <input type="text" id="filterFecha" class="p-2 border rounded-lg" placeholder="Fecha (dd/mm/aaaa)">
-            <input type="text" id="filterEstado" class="p-2 border rounded-lg" placeholder="Estado">
-            <input type="text" id="filterAsignado" class="p-2 border rounded-lg" placeholder="Camion">
+            <input type="text" id="filterEstado" class="p-2 border rounded-lg w-24" placeholder="Estado">
+            <input type="text" id="filterAsignado" class="p-2 border rounded-lg w-24" placeholder="Camion">
+            <input type="text" id="filterDestinatario" class="p-2 border rounded-lg w-32" placeholder="Destinatario">
+            <input type="text" id="filterPoblacion" class="p-2 border rounded-lg w-24" placeholder="Poblacion">
             <input type="text" id="filterFechaAsignado" class="p-2 border rounded-lg" placeholder="Fecha Asignado (dd/mm/aaaa)">
-            <input type="text" id="filterFechaReparto" class="p-2 border rounded-lg" placeholder="Fecha Entrega (dd/mm/aaaa)">
 
             <div class="flex items-center gap-2">
     <button onclick="clearFilters()" class="bg-red-500 text-white px-4 py-2 rounded-lg">Limpiar Filtros</button>
@@ -196,13 +197,14 @@
                         <th class="px-6 py-4 text-left">Expedición</th>
                         <th class="px-6 py-4 text-left">Cliente</th>
                         <th class="px-6 py-4 text-left">Destinatario</th>
+                        <th class="px-6 py-4 text-left">Poblacion</th>
                         <th class="px-6 py-4 text-left">Bultos</th>
                         <th class="px-6 py-4 text-left">Kg</th>
                         <th class="px-6 py-4 text-left">Estado</th>
                         <th class="px-6 py-4 text-left">Fecha Asignado</th>
                         <th class="px-6 py-4 text-left">Asignado</th>
                         <th class="px-6 py-4 text-left">Viaje</th>
-                        <th class="px-6 py-4 text-left">Fecha Entrega</th>
+                        <th class="px-6 py-4 text-left">Impresión</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -215,6 +217,7 @@
         <td class="px-6 py-4">{{ expedicion.expedicion }}</td>
         <td class="px-6 py-4">{{ expedicion.cliente }}</td>
         <td class="px-6 py-4">{{ expedicion.destinatario }}</td>
+        <td class="px-6 py-4">{{ expedicion.poblacion_destinatario }}</td>
         <td class="px-6 py-4">{{ expedicion.bultos }}</td>
         <td class="px-6 py-4">{{ expedicion.kg }}</td>
         <td class="px-6 py-4">{{ expedicion.estado }}</td>
@@ -223,7 +226,6 @@
         </td>
         <td class="px-6 py-4">{{ expedicion.asignada_a }}</td>
         <td class="px-6 py-4">{{ expedicion.viaje }}</td>
-        <td class="px-6 py-4">{{ expedicion.fecha_entrega }}</td>
 
         <!-- Botones para imprimir -->
         <td class="px-6 py-4 flex space-x-2">
@@ -262,15 +264,19 @@
 
         function filterTable() {
     const filterEstado = document.getElementById('filterEstado').value.toLowerCase();
+    const filterDestinatario = document.getElementById('filterDestinatario').value.toLowerCase();
+    const filterPoblacion = document.getElementById('filterPoblacion').value.toLowerCase();
     const filterFecha = document.getElementById('filterFecha').value.toLowerCase();
     const filterFechaAsignacion = document.getElementById('filterFechaAsignado').value.toLowerCase();
     const filterAsignado = document.getElementById('filterAsignado').value.toLowerCase();
-    const filterFechaEntrega = document.getElementById('filterFechaReparto').value.toLowerCase();
+
 
     const rows = document.querySelectorAll('#expedicionTable tbody tr');
 
     rows.forEach(row => {
         const estado = row.cells[7].textContent.toLowerCase(); // Columna 7: Estado
+        const destinatario = row.cells[4].textContent.toLowerCase(); // Columna 7: Estado
+        const poblacion = row.cells[5].textContent.toLowerCase(); // Columna 7: Estado
         const fecha = row.cells[1].textContent.toLowerCase(); // Columna 1: Fecha
         const fechaAsignacion = row.cells[8].textContent.toLowerCase(); // Columna 8: Fecha Asignado
         const asignado = row.cells[9].textContent.toLowerCase(); // Columna 9: Asignado
@@ -278,10 +284,11 @@
 
         // Filtra las filas de acuerdo con los valores de los filtros
         if (estado.includes(filterEstado) &&
+            destinatario.includes(filterDestinatario) &&
+            poblacion.includes(filterPoblacion) &&
             fecha.includes(filterFecha) &&
             fechaAsignacion.includes(filterFechaAsignacion) &&
-            asignado.includes(filterAsignado) &&
-            fechaEntrega.includes(filterFechaEntrega)) {
+            asignado.includes(filterAsignado)) {
             row.style.display = '';
         } else {
             row.style.display = 'none';

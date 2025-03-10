@@ -82,7 +82,7 @@
                                    value="{{ expedicion.dir_remitente if expedicion else '' }}">
                         </label>
                         <label class="block">Código Postal:
-                            <input type="number" name="cod_postal_remitente" class="w-full p-2 border rounded"
+                            <input type="text" name="cod_postal_remitente" class="w-full p-2 border rounded"
                                    value="{{ expedicion.cod_postal_remitente if expedicion else '' }}" required>
                         </label>
                         <label class="block">Población:
@@ -113,7 +113,7 @@
                                    value="{{ expedicion.dir_destinatario if expedicion else '' }}" required>
                         </label>
                         <label class="block">Código Postal:
-                            <input type="number" name="cod_postal_destinatario" class="w-full p-2 border rounded"
+                            <input type="text" name="cod_postal_destinatario" class="w-full p-2 border rounded"
                                    value="{{ expedicion.cod_postal_destinatario if expedicion else '' }}" required>
                         </label>
                         <label class="block">Población:
