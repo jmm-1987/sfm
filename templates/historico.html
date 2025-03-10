@@ -93,7 +93,7 @@
 
     <!-- Contenedor principal -->
     <div class="flex flex-col mt-6 mx-6">
-        <h2 class="text-2xl font-semibold text-blue-700 mb-6">Gestión de repartos</h2>
+        <h2 class="text-2xl font-semibold text-blue-700 mb-6">Historico de expediciones</h2>
 
         <!-- Contenedor de filtros -->
         <div class="flex flex-wrap gap-4 mb-4">
@@ -106,76 +106,8 @@
             <div class="flex items-center gap-2">
     <button onclick="clearFilters()" class="bg-red-500 text-white px-4 py-2 rounded-lg">Limpiar Filtros</button>
 
-    <button onclick="openModal()" class="bg-green-500 text-white px-3 py-2 rounded-lg hover:bg-green-600 relative group">
-        +
-        <span class="absolute left-1/2 transform -translate-x-1/2 -top-8 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-            Crear Expedición
-        </span>
-    </button>
-
-    <!-- Botón para abrir el flujo de modales -->
-    <button onclick="openSelectVehicleModal()" class="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 relative group">
-        🚛
-        <span class="absolute left-1/2 transform -translate-x-1/2 -top-8 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-            Asignar Reparto
-        </span>
-    </button>
-
-    <a href="/cerrar_repartos" class="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 relative group flex items-center justify-center">
-        ✅
-        <span class="absolute left-1/2 transform -translate-x-1/2 -top-8 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-            Cerrar Reparto
-        </span>
-    </a>
-
-   <!-- Botón para imprimir listados de reparto -->
-<a href="{{ url_for('impresion_listados_reparto') }}" class="bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-orange-600 relative group flex items-center justify-center">
-    📄
-    <span class="absolute left-1/2 transform -translate-x-1/2 -top-8 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-        Imprimir Listados
-    </span>
-</a>
-
 </div>
 
-
-
-     <!-- Modal Seleccionar Matrícula -->
-<div id="selectVehicleModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-xl w-96">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold text-blue-600">Seleccionar Matrícula</h2>
-            <a href="/repartos" class="text-gray-500 hover:text-red-500">
-                <i class="fas fa-times"></i>
-            </a>
-        </div>
-        <form action="/asignar_reparto" method="GET">
-            <!-- Campo para seleccionar matrícula -->
-            <div class="mb-4">
-                <label for="selectedVehicle" class="block text-gray-600 mb-1">Selecciona una matrícula:</label>
-                <select name="matricula" id="selectedVehicle" class="w-full p-2 border rounded-lg" required>
-                    <option value="" disabled selected>Selecciona una matrícula</option>
-                    {% for vehiculo in vehiculos %}
-                    <option value="{{ vehiculo.matricula }}">{{ vehiculo.matricula }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <!-- Campo de fecha con la fecha actual por defecto -->
-            <div class="mb-4">
-                <label for="fechaAsignacion" class="block text-gray-600 mb-1">Fecha de Asignación:</label>
-                <input type="date" name="fecha_asignacion" id="fechaAsignacion" class="w-full p-2 border rounded-lg" value="{{ fecha_actual }}" required>
-            </div>
-
-            <!-- Botón para confirmar -->
-            <div class="flex justify-end">
-                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
-                    Confirmar
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
 
 
     </div>

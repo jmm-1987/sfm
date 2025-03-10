@@ -53,6 +53,7 @@ def ruta_grabar_expedidion(app):
         tarifa = db.session.query(Cliente.tarifa).filter(Cliente.alias == cliente).scalar()
 
         ingreso_distribucion = calcular_ingreso_distribucion(tarifa,cod_postal_destinatario, bultos, tipo_bulto, kg_conv)
+        print (ingreso_distribucion)
 
         # Crear la instancia de la clase Expedicion con los datos recibidos
         nueva_expedicion = Expedicion(

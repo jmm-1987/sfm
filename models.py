@@ -46,6 +46,7 @@ class Expedicion(Base):
     reembolso = Column(Float, nullable=True, default=0.0)
     estado = Column(Enum("almacen", "en reparto", "entregado", name="estado_expedicion"), nullable=False,
                     default="almacen")
+    fecha_llegada = Column(DateTime, nullable=True)
     fecha_asignacion = Column(DateTime, nullable=True)
     fecha_entrega = Column(DateTime, nullable=True)
     facturada = Column(Boolean, default=False)
@@ -76,7 +77,7 @@ class Expedicion(Base):
                  poblacion_remitente, provincia_remitente, pais_remitente, destinatario, dir_destinatario,
                  cod_postal_destinatario, poblacion_destinatario, provincia_destinatario, pais_destinatario, bultos, kg,
                  volumen=0, kg_conv=kg, incidencia_tipo=None, incidencia_ampliacion=None,
-                 tipo_bulto=None, reembolso=0.0, estado="almacen", facturada=False, asignada_a=None, viaje=None,
+                 tipo_bulto=None, reembolso=0.0, estado="almacen", facturada=False, asignada_a=None, viaje=None, fecha_llegada=None,
                  fecha_asignacion=None, fecha_entrega=None, fecha_incidencia = None,
                  ingreso_com_reembolso=0.0, ingreso_distribucion=0.0, ingreso_cargo_adicional=0.0, coste_reparto=0.0,
                  coste_arrastre=0.0, coste_removido=0.0,dev_alb_firmado=False,
@@ -108,6 +109,7 @@ class Expedicion(Base):
         self.facturada = facturada
         self.asignada_a = asignada_a
         self.viaje = viaje
+        self.fecha_llegada=fecha_llegada
         self.fecha_asignacion = fecha_asignacion
         self.fecha_entrega = fecha_entrega
         self.ingreso_com_reembolso = ingreso_com_reembolso

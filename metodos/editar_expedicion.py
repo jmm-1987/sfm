@@ -26,6 +26,7 @@ def ruta_editar_expedicion(app):
             expedicion.dir_destinatario = request.form['dir_destinatario']
             expedicion.cod_postal_destinatario = request.form['cod_postal_destinatario']
             expedicion.bultos = request.form['bultos']
+            expedicion.tipo_bulto = request.form['tipo_bulto']
             expedicion.kg = request.form['kg']
             expedicion.reembolso = request.form['reembolso']
             expedicion.estado = request.form['estado']

@@ -27,6 +27,7 @@ def ruta_editar_expedicion_simple(app):
             expedicion.cod_postal_destinatario = request.form['cod_postal_destinatario']
             expedicion.bultos = request.form['bultos']
             expedicion.kg = request.form['kg']
+            expedicion.tipo_bulto = request.form['tipo_bulto']
             expedicion.estado = request.form['estado']
 
 

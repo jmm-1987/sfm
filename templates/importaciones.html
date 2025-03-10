@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientes - SFM Logística</title>
+    <title>Importaciones - SFM Logística</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function openModal(id) {
+            document.getElementById(id).classList.remove("hidden");
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add("hidden");
+        }
+    </script>
     <style>
         body { font-family: 'Arial', sans-serif; }
         table th, table td {
@@ -16,8 +25,9 @@
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <header class="bg-gradient-to-r from-white to-blue-600 p-2 flex justify-between items-center shadow-lg transition-all duration-700">
+<body class="bg-gray-100">
+
+<header class="bg-gradient-to-r from-white to-blue-600 p-2 flex justify-between items-center shadow-lg transition-all duration-700">
 
         <div class="flex items-center">
             <img src="{{ url_for('static', filename='img/logosfm.png') }}" alt="Logo" class="w-35 h-20">
@@ -67,6 +77,11 @@
     <span class="opacity-0 group-hover:opacity-100 text-xs text-white transition-opacity mt-1">Repartos</span>
 </a>
 
+            <a href="historico" class="group flex flex-col items-center justify-center text-white hover:text-white hover:bg-blue-500 px-3 py-2 rounded-md focus:outline-none">
+   <span class="text-3xl">  🗂️ </span>
+   <span class="opacity-0 group-hover:opacity-100 text-xs text-white transition-opacity mt-1">Histórico</span>
+</a>
+
        <a href="importaciones" class="group flex flex-col items-center justify-center text-white hover:text-white hover:bg-blue-500 px-3 py-2 rounded-md focus:outline-none">
     <span class="text-3xl">📥</span>
     <span class="opacity-0 group-hover:opacity-100 text-xs text-white transition-opacity mt-1">Importar</span>
@@ -84,6 +99,73 @@
         </div>
     </header>
 
+
+    <div class="container mx-auto p-6">
+        <h1 class="text-2xl font-bold text-center mb-6">Importaciones</h1>
+
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+
+            <!-- Importación Seytra -->
+            <div class="bg-white shadow-md rounded-lg p-4 text-center cursor-pointer hover:bg-blue-100 transition" onclick="openModal('modalSeytra')">
+                <span class="text-4xl">📥</span>
+                <p class="mt-2 font-semibold">Seytra</p>
+            </div>
+
+            <!-- Modal Seytra -->
+            <div id="modalSeytra" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+                    <h2 class="text-xl font-semibold mb-4">Importación Seytra</h2>
+                    <input type="file" id="fileInputSeytra" class="border p-2 w-full mb-4">
+                    <div class="flex justify-end space-x-2">
+                        <button onclick="closeModal('modalSeytra')" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 transition">Cancelar</button>
+
+                        <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Procesar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Importación Tyd -->
+            <div class="bg-white shadow-md rounded-lg p-4 text-center cursor-pointer hover:bg-blue-100 transition" onclick="openModal('modalTyd')">
+                <span class="text-4xl">📥</span>
+                <p class="mt-2 font-semibold">Tyd</p>
+            </div>
+
+            <!-- Modal Tyd -->
+            <div id="modalTyd" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+                    <h2 class="text-xl font-semibold mb-4">Importación Tyd</h2>
+                    <input type="file" id="fileInputTyd" class="border p-2 w-full mb-4">
+                    <div class="flex justify-end space-x-2">
+                        <button onclick="closeModal('modalTyd')" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 transition">Cancelar</button>
+
+                        <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Procesar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Importación RedPallex -->
+            <div class="bg-white shadow-md rounded-lg p-4 text-center cursor-pointer hover:bg-blue-100 transition" onclick="openModal('modalRedPallex')">
+                <span class="text-4xl">📥</span>
+                <p class="mt-2 font-semibold">RedPallex</p>
+            </div>
+
+            <!-- Modal RedPallex -->
+            <div id="modalRedPallex" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+                    <h2 class="text-xl font-semibold mb-4">Importación RedPallex</h2>
+                    <input type="file" id="fileInputRedPallex" class="border p-2 w-full mb-4">
+                    <div class="flex justify-end space-x-2">
+                        <button onclick="closeModal('modalRedPallex')" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 transition">Cancelar</button>
+
+                        <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Procesar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Puedes agregar más importaciones aquí -->
+
+        </div>
+    </div>
 
 </body>
 </html>

@@ -201,6 +201,14 @@ def produccion():
     expediciones = db.session.query(Expedicion).all()  # Obtener todas las expediciones
     return render_template("produccion.html", expediciones=expediciones)
 
+@app.route('/historico')
+@login_required
+def historico():
+    expedicion_id = request.args.get("id")
+    expedicion = get_expedicion_by_id(expedicion_id) if expedicion_id else None
+    expediciones = db.session.query(Expedicion).filter(Expedicion.estado == "entregado").order_by(Expedicion.fecha.desc()).all()
+    return render_template("historico.html", expedicion=expedicion, expediciones=expediciones)
+
 @app.route('/cerrar_repartos')
 @login_required
 def cerrar_repartos():
