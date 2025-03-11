@@ -38,6 +38,8 @@ def ruta_grabar_expedidion(app):
         tipo_bulto = request.form.get('tipo_bulto')
 
         # Valores opcionales con valor predeterminado si no se envían
+        referencia = request.form.get('referencia', None)
+        referencia2 = request.form.get('referencia2', None)
         reembolso = request.form.get('reembolso', 0.0)
         estado = request.form.get('estado', "almacen")
         ingreso_com_reembolso = request.form.get('ingreso_com_reembolso', 0.0)
@@ -87,7 +89,9 @@ def ruta_grabar_expedidion(app):
             coste_reparto=coste_reparto,
             coste_arrastre=coste_arrastre,
             coste_removido=coste_removido,
-            coste_distribucion=coste_distribucion
+            coste_distribucion=coste_distribucion,
+            referencia=referencia,
+            referencia2=referencia2,
         )
 
         # Añadir la expedición a la sesión y hacer commit para guardarla en la base de datos

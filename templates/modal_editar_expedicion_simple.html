@@ -11,7 +11,7 @@
 <div id="expedicionEditModalSimple" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 {% if not expedicion %}hidden{% endif %}">
     <!--<div class="bg-white rounded-xl shadow-2xl w-full max-w-7xl mx-4 p-6 max-h-[90vh] overflow-y-auto">-->
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-[90rem] mx-4 p-6 max-h-[95vh] overflow-y-auto">
-        <h2 class="text-xl font-bold mb-4 text-blue-700 text-center">Editar Expedición: {{ expedicion.expedicion }} Id: ({{ expedicion.id }})</h2>
+        <h2 class="text-xl font-bold mb-4 text-blue-700 text-center">Editar Expedición: {{ expedicion.expedicion }} Número: ({{ expedicion.id }})</h2>
 
         <form id="expedicionEditForm" method="POST" action="{{ url_for('editar_expedicion_simple', id=expedicion.id) if expedicion else '#' }}">
             <input type="hidden" id="editId" name="id" value="{{ expedicion.id if expedicion else '' }}">
@@ -28,9 +28,9 @@
                                     value="{{ expedicion.fecha.strftime('%Y-%m-%d') if expedicion and expedicion.fecha else '' }}" required>
                             </label>
                             <label class="inline-flex items-center">
-                                <span class="mr-2">Expedición:</span>
+                                <span class="mr-2">Expedición/Alb.Cliente:</span>
                                 <input type="number" name="expedicion" class="p-1 border rounded w-20"
-                                    value="{{ expedicion.expedicion if expedicion else '' }}" required>
+                                    value="{{ expedicion.expedicion if expedicion else '' }}">
                             </label>
                             <label class="inline-flex items-center">
                                 <span class="mr-2">Cliente:</span>
@@ -259,6 +259,7 @@
 function closeEditModal() {
     window.location.href = "/repartos"; // Redirigir a la vista repartos
 }
+
 </script>
 
 </body>

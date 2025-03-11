@@ -37,7 +37,7 @@ def generar_pdf_albaran(expedicion_id):
 
         # Fecha y datos básicos
         c.drawString(120 * mm, y_offset + 82 * mm, f"Fecha: {expedicion.fecha.strftime('%d/%m/%Y')}")
-        c.drawString(120 * mm, y_offset + 77 * mm, f"Expedición: {expedicion.id}")
+        c.drawString(120 * mm, y_offset + 77 * mm, f"Número: {expedicion.id}")
         c.drawString(120 * mm, y_offset + 72 * mm, f"Referencia: {expedicion.expedicion}")
 
         # Código de barras debajo de la tabla

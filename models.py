@@ -1,8 +1,8 @@
 import db
-from sqlalchemy import Column, Integer, String, Enum, ForeignKey, Boolean, Float, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey, Boolean, Float, UniqueConstraint, Sequence
 from sqlalchemy import DateTime, Date
 from flask_login import UserMixin
-from db import Base
+from db import Base, session
 
 class User(UserMixin, db.Base):
     __tablename__ = "user"
@@ -18,9 +18,11 @@ class User(UserMixin, db.Base):
 class Expedicion(Base):
     __tablename__ = "expedicion"
 
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    id = Column(Integer, Sequence('id_seq', start=1000, increment=1),primary_key=True, nullable=False)
     fecha = Column(DateTime, nullable=False)
-    expedicion = Column(String, nullable=False)
+    expedicion = Column(String, nullable=True)
+    referencia = Column(String, nullable=True, default="N/A")
+    referencia2 = Column(String, nullable=True,  default="N/A")
     agencia_origen = Column(String(200), nullable=False)
     agencia_destino = Column(String(200), nullable=False)
     cliente = Column(String(200), nullable=False)
@@ -72,7 +74,7 @@ class Expedicion(Base):
         UniqueConstraint('expedicion', 'cliente', name='_expedicion_cliente_uc'),
     )
 
-    def __init__(self, fecha, expedicion, agencia_origen, agencia_destino, cliente, remitente, dir_remitente,
+    def __init__(self, fecha, expedicion, referencia, agencia_origen, agencia_destino, cliente, remitente, dir_remitente,
                  cod_postal_remitente,
                  poblacion_remitente, provincia_remitente, pais_remitente, destinatario, dir_destinatario,
                  cod_postal_destinatario, poblacion_destinatario, provincia_destinatario, pais_destinatario, bultos, kg,
@@ -80,10 +82,13 @@ class Expedicion(Base):
                  tipo_bulto=None, reembolso=0.0, estado="almacen", facturada=False, asignada_a=None, viaje=None, fecha_llegada=None,
                  fecha_asignacion=None, fecha_entrega=None, fecha_incidencia = None,
                  ingreso_com_reembolso=0.0, ingreso_distribucion=0.0, ingreso_cargo_adicional=0.0, coste_reparto=0.0,
-                 coste_arrastre=0.0, coste_removido=0.0,dev_alb_firmado=False,
-                 coste_distribucion=0.0, tlf_remitente=0, tlf_destinatario=0, albaran_entrega=False, albaran_cliente=False, observaciones=""):
+                 coste_arrastre=0.0, coste_removido=0.0, dev_alb_firmado=False,
+                 coste_distribucion=0.0, tlf_remitente=0, tlf_destinatario=0, albaran_entrega=False, albaran_cliente=False, observaciones="",
+                 referencia2=None):
         self.fecha = fecha
         self.expedicion = expedicion
+        self.referencia = referencia
+        self.referencia2 = referencia2
         self.agencia_origen = agencia_origen
         self.agencia_destino = agencia_destino
         self.cliente = cliente
@@ -229,3 +234,23 @@ class Vehiculo(Base):
 
     def __str__(self):
         return f"Vehículo: {self.matricula} ({'Activo' if self.activo else 'Inactivo'})"
+
+    class Incidencia(Base):
+        __tablename__ = "incidencia"
+
+        id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+        fecha_incidencia = Column(DateTime, nullable=False)
+        tipo = Column(String(50), nullable=False)
+        descripcion = Column(String(500), nullable=False)
+        id_expedicion = Column(Integer, ForeignKey('expedicion.id'), nullable=False)
+        resuelta = Column(Boolean, default=True, nullable=False)
+
+        def __init__(self, fecha_incidencia, tipo, descripcion, id_expedicion, resuelta=False):
+            self.fecha_incidencia = fecha_incidencia
+            self.tipo = tipo
+            self.descripcion = descripcion
+            self.id_expedicion = id_expedicion
+            self.resuelta = resuelta
+
+        def __str__(self):
+            return f"Incidencia: {self.tipo} - {self.descripcion[:20]}... (Expedición ID: {self.id_expedicion})"

@@ -53,7 +53,7 @@ def ruta_exportar_pdf_listado(app):
             # Se agregó espacio para la nueva columna "Población Destinatario"
             col_widths = [60, 80, 100, 100, 100, 100, 50, 50]
 
-            headers = ["ID", "Fecha", "Expedición", "Remitente", "Destinatario", "Población", "Bultos", "Kg"]
+            headers = ["Número", "Fecha", "Expedición", "Remitente", "Destinatario", "Población", "Bultos", "Kg"]
             x_pos = x_start
             for i, header in enumerate(headers):
                 pdf.drawString(x_pos, y_start, header)

@@ -125,7 +125,7 @@ def repartos():
     vehiculos = db.session.query(Vehiculo.matricula).filter(Vehiculo.activo == True).all()
     clientes = db.session.query(Cliente).filter(Cliente.activo == True).all()
     agencias = ["SFM","PALLEX","SEYTRA","TyD","TEDi","REDPALLETS"]
-    tipo_bulto = ["MQTR","QTR","MLIGHT","HALF","LIGHT","FULL","MEGAFULL"]
+    tipo_bulto = ["KG","MQTR","QTR","MLIGHT","HALF","LIGHT","FULL","MEGAFULL"]
     expedicion_id = request.args.get("id")
     expedicion = get_expedicion_by_id(expedicion_id) if expedicion_id else None
     expediciones = db.session.query(Expedicion).filter(Expedicion.estado != "entregado").order_by(Expedicion.fecha.desc()).all()
