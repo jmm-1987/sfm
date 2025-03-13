@@ -14,6 +14,7 @@ def ruta_editar_cliente(app):
         if request.method == 'POST':
             # Obtener datos del formulario y actualizar
 
+            cliente.nombre_fiscal = request.form.get('nombre_fiscal')
             cliente.email = request.form.get('email')
             cliente.telefono = request.form.get('telefono')
             cliente.notas = request.form.get('notas')

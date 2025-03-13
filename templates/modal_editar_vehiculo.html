@@ -95,6 +95,14 @@
     function cerrarEditarModal() {
         document.getElementById("modal_editar_vehiculo").classList.add("hidden");
     }
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const inputs = document.querySelectorAll('input[type="text"], textarea');
+        inputs.forEach(input => {
+            input.addEventListener('input', (event) => {
+                event.target.value = event.target.value.toUpperCase();
+            });
+        });
+    });
 </script>
 
 </body>

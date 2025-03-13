@@ -254,6 +254,15 @@ document.addEventListener("DOMContentLoaded", function () {
         let hoy = new Date().toISOString().split('T')[0]; // Obtiene la fecha en formato YYYY-MM-DD
         document.getElementById("fecha").value = hoy;
     });
+
+document.addEventListener('DOMContentLoaded', (event) => {
+        const inputs = document.querySelectorAll('input[type="text"], textarea');
+        inputs.forEach(input => {
+            input.addEventListener('input', (event) => {
+                event.target.value = event.target.value.toUpperCase();
+            });
+        });
+    });
 </script>
 </body>
 </html>

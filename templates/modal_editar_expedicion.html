@@ -306,6 +306,14 @@
 function closeEditModal() {
     window.location.href = "/repartos"; // Redirigir a la vista repartos
 }
+document.addEventListener('DOMContentLoaded', (event) => {
+        const inputs = document.querySelectorAll('input[type="text"], textarea');
+        inputs.forEach(input => {
+            input.addEventListener('input', (event) => {
+                event.target.value = event.target.value.toUpperCase();
+            });
+        });
+    });
 </script>
 
 </body>
