@@ -16,6 +16,7 @@ def route_exportar_pdf_facturacion(app):
             if not datos:
                 return jsonify({'error': 'No hay datos para exportar'}), 400
 
+
             buffer = BytesIO()
             pdf = canvas.Canvas(buffer, pagesize=landscape(A4))
             width, height = landscape(A4)

@@ -7,6 +7,8 @@ def ruta_desasignar_expedicion(app):
     def desasignar_expedicion():
 
         expedicion_id = request.form.get('expedicion_id')
+        control = request.form.get('control')
+
 
         if not expedicion_id:
             flash("Error: No se proporcionó el código de expedición.", "error")
@@ -15,7 +17,7 @@ def ruta_desasignar_expedicion(app):
         expedicion = session.query(Expedicion).filter_by(id=expedicion_id).first()
 
         if expedicion:
-            print(f"Expedición encontrada: {expedicion}")  # Depuración
+
 
             fecha_asignacion_limpia = None
 
@@ -30,4 +32,7 @@ def ruta_desasignar_expedicion(app):
             flash(f"Error: Expedición {expedicion_id} no encontrada.", "error")
             print(f"Error: Expedición {expedicion_id} no encontrada.")
 
-        return redirect(url_for('repartos'))
+        if control == "simple":
+            return redirect(url_for('repartos'))
+        else:
+            return redirect(url_for('facturacion'))

@@ -184,7 +184,7 @@ class Cliente(Base):
     alias = Column(String(200), nullable=False)
     nombre_fiscal = Column(String(200), nullable=False)
     direccion = Column(String(200), nullable=True)
-    codigo_postal = Column(Integer, nullable=True)
+    codigo_postal = Column(String(5), nullable=True)
     poblacion = Column(String(200), nullable=True)
     provincia = Column(String(200), nullable=True)
     pais = Column(String(100), nullable=True)

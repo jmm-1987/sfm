@@ -219,33 +219,35 @@
     }
 
     function filterTable() {
-            const filterId = document.getElementById('filterId').value.toLowerCase();
-            const filterFechaDesde = document.getElementById('filterFechaDesde').value;
-            const filterFechaHasta = document.getElementById('filterFechaHasta').value;
-            const filterExpedicion = document.getElementById('filterExpedicion').value.toLowerCase();
-            const filterAgencia = document.getElementById('filterAgencia').value.toLowerCase();
-            const filterCliente = document.getElementById('filterCliente').value.toLowerCase();
-            const filterEstado = document.getElementById('filterEstado').value.toLowerCase();
+    const filterId = document.getElementById('filterId').value.toLowerCase();
+    const filterFechaDesde = document.getElementById('filterFechaDesde').value;
+    const filterFechaHasta = document.getElementById('filterFechaHasta').value;
+    const filterExpedicion = document.getElementById('filterExpedicion').value.toLowerCase();
+    const filterAgencia = document.getElementById('filterAgencia').value.toLowerCase();
+    const filterCliente = document.getElementById('filterCliente').value.toLowerCase();
+    const filterEstado = document.getElementById('filterEstado').value.toLowerCase();
 
-            document.querySelectorAll('#expedicionTable tbody tr').forEach(row => {
-                const id = row.cells[0].textContent.toLowerCase();
-                const fecha = row.cells[1].textContent.split('/').reverse().join('-');
-                const expedicion = row.cells[2].textContent.toLowerCase();
-                const agencia = row.cells[3].textContent.toLowerCase();
-                const cliente = row.cells[4].textContent.toLowerCase();
-                const estado = row.cells[11].textContent.toLowerCase();
+    document.querySelectorAll('#expedicionTable tbody tr').forEach(row => {
+        const id = row.cells[0].textContent.toLowerCase();
+        const fecha = row.cells[1].textContent.split('/').reverse().join('-');
+        const expedicion = row.cells[2].textContent.toLowerCase();
+        const agencia = row.cells[3].textContent.toLowerCase();
+        const cliente = row.cells[4].textContent.toLowerCase();
+        const estado = row.cells[11].textContent.toLowerCase();
 
-                let fechaValida = true;
-                if (filterFechaDesde && fecha < filterFechaDesde) fechaValida = false;
-                if (filterFechaHasta && fecha > filterFechaHasta) fechaValida = false;
+        let fechaValida = true;
+        if (filterFechaDesde && fecha < filterFechaDesde) fechaValida = false;
+        if (filterFechaHasta && fecha > filterFechaHasta) fechaValida = false;
 
-                if (id.includes(filterId) && fechaValida && expedicion.includes(filterExpedicion) && agencia.includes(filterAgencia) && cliente.includes(filterCliente)&& estado.includes(filterEstado)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
+        if (id.includes(filterId) && fechaValida && expedicion.includes(filterExpedicion) && agencia.includes(filterAgencia) && cliente.includes(filterCliente) && estado.includes(filterEstado)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
         }
+    });
+
+    updateSummary(); // Llama a updateSummary para actualizar los totales después de filtrar
+}
 
         document.querySelectorAll('.p-2.border').forEach(input => {
             input.addEventListener('input', filterTable);

@@ -48,10 +48,10 @@ def calcular_ingreso_distribucion(tarifa, cod_postal_destinatario, bultos, tipo_
 
         # Obtener la tarifa base
         tarifa_base= fila_cp.iloc[:, index_correcto].values[0]
-
+        print(type(tarifa_base))
 
         # Calcular el ingreso total
-        ingreso_distribucion = round(float(tarifa_base) * bultos,2)
+        ingreso_distribucion = round(float(tarifa_base) * int(bultos),2)
 
         return ingreso_distribucion
 

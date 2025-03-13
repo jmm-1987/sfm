@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 event.preventDefault(); // Evita el comportamiento predeterminado
 
                 if (expedicionInput.value.trim() !== "") { // Solo ejecuta si hay un valor
-                    assignButton.click(); // Simula el clic en el botón "Añadir Asignación"
+                    assignForm.submit(); // Simula el clic en el botón "Añadir Asignación"
 
                     // Pequeño retraso para garantizar que el foco vuelva correctamente
                     setTimeout(() => {

@@ -6,8 +6,8 @@ def ruta_eliminar_expedicion(app):
     @app.route('/eliminar_expedicion', methods=['POST'])
     def eliminar_expedicion():
         expedicion_id = request.form.get('expedicion_id')
-        print (expedicion_id)
-        print("algo")
+        control = request.form.get('control')
+        print(control)
 
         if not expedicion_id:
             flash("Error: No se proporcionó el código de expedición.", "error")
@@ -29,4 +29,7 @@ def ruta_eliminar_expedicion(app):
             flash(f"Error: Expedición {expedicion_id} no encontrada.", "error")
             print(f"Error: Expedición {expedicion_id} no encontrada.")
 
-        return redirect(url_for('facturacion'))
+        if control == "simple":
+            return redirect(url_for('repartos'))
+        else:
+            return redirect(url_for('facturacion'))
