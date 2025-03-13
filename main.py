@@ -52,9 +52,9 @@ route_exportar_pdf_facturacion(app)
 ruta_retasar_ingreso_distribucion(app)
 ruta_editar_expedicion_simple(app)
 ruta_obtener_datos_cliente_js(app)
-ruta_eliminar_expedicion(app)
 ruta_exportar_pdf_listado(app)
 ruta_desasignar_expedicion(app)
+ruta_eliminar_expedicion(app)
 
 
 
@@ -198,8 +198,10 @@ def facturacion():
 @app.route('/produccion')
 @login_required
 def produccion():
-    expediciones = db.session.query(Expedicion).all()  # Obtener todas las expediciones
-    return render_template("produccion.html", expediciones=expediciones)
+    expediciones = db.session.query(Expedicion).filter(Expedicion.estado == "entregado" or Expedicion.estado == "en reparto" ).order_by(Expedicion.fecha.desc()).all()
+    expedicion_id = request.args.get("id")
+    expedicion = get_expedicion_by_id(expedicion_id) if expedicion_id else None
+    return render_template("produccion.html", expedicion=expedicion, expediciones=expediciones)
 
 @app.route('/historico')
 @login_required

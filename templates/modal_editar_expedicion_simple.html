@@ -30,7 +30,7 @@
                             <label class="inline-flex items-center">
                                 <span class="mr-2">Expedición/Alb.Cliente:</span>
                                 <input type="number" name="expedicion" class="p-1 border rounded w-20"
-                                    value="{{ expedicion.expedicion if expedicion else '' }}">
+                                    value="{{ expedicion.expedicion if expedicion else '' }}" required>
                             </label>
                             <label class="inline-flex items-center">
                                 <span class="mr-2">Cliente:</span>
@@ -228,33 +228,36 @@
             </div>
 
             <!-- Botones -->
-            <div class="flex justify-between mt-4">
-                <div>
-                    {% if expedicion.estado == "en reparto" %}
-                        <form method="POST" action="{{ url_for('desasignar_expedicion') }}" class="inline">
-                            <input type="hidden" name="expedicion" value="{{ expedicion.expedicion }}">
-                            <input type="hidden" name="fecha_asignacion" value="{{ expedicion.fecha_asignacion }}">
-                            <button type="submit" class="bg-orange-600 text-white px-4 py-1 rounded hover:bg-orange-700 transition text-sm">
-                                Quitar de reparto
-                            </button>
-                        </form>
-                    {% endif %}
-                    <form method="POST" action="{{ url_for('eliminar_expedicion') }}" class="inline ml-2">
-                        <input type="hidden" name="expedicion" value="{{ expedicion.expedicion }}">
-                        <button type="submit" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 transition text-sm">
-                            Eliminar
-                        </button>
-                    </form>
-                </div>
+            <div class="flex justify-end mt-4">
+
                 <div class="flex space-x-2">
                     <button type="button" onclick="closeEditModal()" class="bg-gray-500 text-white px-4 py-1 rounded hover:bg-gray-600 transition text-sm">Cancelar</button>
                     <button type="submit" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition text-sm">Guardar</button>
                 </div>
             </div>
         </form>
+        <div class="flex justify-between mt-4">
+                <div>
+                    {% if expedicion.estado == "en reparto" %}
+                        <form method="POST" action="{{ url_for('desasignar_expedicion') }}" class="inline ml-2">
+                            <input type="hidden" name="expedicion_id" value="{{ expedicion.id }}">
+                            <input type="hidden" name="control" value="simple">
+                            <button type="submit" class="bg-orange-600 text-white px-4 py-1 rounded hover:bg-orange-700 transition text-sm">
+                                Quitar de reparto
+                            </button>
+                        </form>
+                    {% endif %}
+                        <form method="POST" action="{{ url_for('eliminar_expedicion') }}" class="inline ml-2">
+                            <input type="hidden" name="expedicion_id" value="{{ expedicion.id }}">
+                            <input type="hidden" name="control" value="simple">
+                            <button type="submit" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 transition text-sm">
+                                Eliminar
+                            </button>
+                        </form>
+                </div>
     </div>
 </div>
-
+</div>
 <script>
 function closeEditModal() {
     window.location.href = "/repartos"; // Redirigir a la vista repartos

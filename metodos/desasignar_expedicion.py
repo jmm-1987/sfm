@@ -1,47 +1,33 @@
-from flask import request, redirect, url_for, render_template
-import db
+from flask import request, redirect, url_for, flash
 from models import Expedicion
-from datetime import datetime
+from db import session
 
 def ruta_desasignar_expedicion(app):
     @app.route('/desasignar_expedicion', methods=['POST'])
     def desasignar_expedicion():
 
-        expedicion_form = request.form.get('expedicion') or request.args.get('fecha_asignacion')
-        vehiculo = request.form.get('matricula')
-
-
-
-        expedicion_id = db.session.query(Expedicion).filter_by(expedicion=expedicion_form).first()
+        expedicion_id = request.form.get('expedicion_id')
 
         if not expedicion_id:
-            return redirect(url_for('asignar_reparto', error='Expedición noOO encontrada'))
-
-        expedicion = db.session.query(Expedicion).filter_by(id=expedicion_id.id).first()
-
-        # Actualizar los campos de la expedición
-        fecha_str = request.form['fecha_asignacion']
-        fecha_asignacion = datetime.strptime(fecha_str.split()[0], "%Y-%m-%d")
-
-        fecha_asignacion_limpia = None
-
-        expedicion.asignada_a = ""
-        expedicion.estado = "almacen"
-        expedicion.fecha_asignacion = fecha_asignacion_limpia
-
-
-        db.session.commit()
-
-        expediciones_asignadas = db.session.query(Expedicion).filter(
-
-            Expedicion.asignada_a == vehiculo,
-            Expedicion.fecha_asignacion == fecha_asignacion
-        ).all()
-
-        if expediciones_asignadas:
-
-            # Redirigir con los parámetros necesarios para restaurar el estado
-            return render_template('asignar_reparto.html', matricula=vehiculo, fecha_asignacion=fecha_asignacion)
-
-        else:
+            flash("Error: No se proporcionó el código de expedición.", "error")
             return redirect(url_for('repartos'))
+
+        expedicion = session.query(Expedicion).filter_by(id=expedicion_id).first()
+
+        if expedicion:
+            print(f"Expedición encontrada: {expedicion}")  # Depuración
+
+            fecha_asignacion_limpia = None
+
+            expedicion.asignada_a = ""
+            expedicion.estado = "almacen"
+            expedicion.fecha_asignacion = fecha_asignacion_limpia
+
+            session.commit()
+            flash(f"Expedición {expedicion_id} desasignada con éxito.", "success")
+            print(f"Expedición {expedicion_id} desasignada con éxito.")
+        else:
+            flash(f"Error: Expedición {expedicion_id} no encontrada.", "error")
+            print(f"Error: Expedición {expedicion_id} no encontrada.")
+
+        return redirect(url_for('repartos'))

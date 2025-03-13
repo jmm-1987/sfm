@@ -5,8 +5,7 @@ from models import Expedicion
 def ruta_eliminar_expedicion(app):
     @app.route('/eliminar_expedicion', methods=['POST'])
     def eliminar_expedicion():
-        # Obtener el código de expedición del formulario
-        expedicion_id = request.form.get('expedicion')
+        expedicion_id = request.form.get('expedicion_id')
         print (expedicion_id)
         print("algo")
 
@@ -15,7 +14,7 @@ def ruta_eliminar_expedicion(app):
             return redirect(url_for('repartos'))
 
         # Buscar la expedición en la base de datos
-        expedicion = session.query(Expedicion).filter_by(expedicion=expedicion_id).first()
+        expedicion = session.query(Expedicion).filter_by(id=expedicion_id).first()
 
         if expedicion:
             # Verificar el estado de la expedición

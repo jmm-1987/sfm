@@ -95,7 +95,7 @@
     <div class="flex flex-col mt-6 mx-6">
         <h2 class="text-2xl font-semibold text-blue-700 mb-6">Asignar Reparto</h2>
 
-        <form action="/asignar_expedicion" method="POST" class="bg-white shadow-lg rounded-lg p-6">
+        <form action="/asignar_expedicion" method="POST" class="bg-white shadow-lg rounded-lg p-6" id="assignForm">
             <!-- Matrícula seleccionada -->
             <div class="mb-4">
                 <label class="block text-gray-600 mb-1">Matrícula seleccionada:</label>
@@ -135,7 +135,7 @@
                 <td class="border px-4 py-2">
                 {{ expedicion.fecha.strftime('%d/%m/%Y') if expedicion.fecha else '' }}
                 </td>
-                <td class="border px-4 py-2">{{ expedicion.expedicion }}</td>
+                <td class="border px-4 py-2">{{ expedicion.id }}</td>
                 <td class="border px-4 py-2">{{ expedicion.cliente }}</td>
                 <td class="border px-4 py-2">{{ expedicion.destinatario }}</td>
                 <td class="border px-4 py-2">{{ expedicion.poblacion_destinatario }}</td>

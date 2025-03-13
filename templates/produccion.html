@@ -89,150 +89,194 @@
 
         </div>
     </header>
+<!-- Contenedor principal -->
+<div class="flex flex-col mt-6 mx-6">
+    <h2 class="text-2xl font-semibold text-blue-700 mb-6">Producción repartidores</h2>
 
-
-    <!-- Contenedor principal -->
-    <div class="flex flex-col mt-6 mx-6">
-        <h2 class="text-2xl font-semibold text-blue-700 mb-6">Ingresos por camiones</h2>
-
-        <!-- Contenedor de filtros -->
-        <div class="flex flex-wrap gap-4 mb-4">
-            <input type="text" id="filterId" class="p-2 border rounded-lg" placeholder="Filtrar por ID">
-            <input type="text" id="filterFecha" class="p-2 border rounded-lg" placeholder="Filtrar por Fecha (dd/mm/aaaa)">
-            <input type="text" id="filterExpedicion" class="p-2 border rounded-lg" placeholder="Filtrar por Expedición">
-            <input type="text" id="filterAgencia" class="p-2 border rounded-lg" placeholder="Filtrar por Agencia">
-            <input type="text" id="filterCliente" class="p-2 border rounded-lg" placeholder="Filtrar por Cliente">
-
-            <div class="flex items-center gap-2">
-                <button onclick="clearFilters()" class="bg-red-500 text-white px-4 py-2 rounded-lg">Limpiar Filtros</button>
-                <button onclick="openModal()" class="bg-green-500 text-white px-3 py-2 rounded-lg hover:bg-green-600 relative group">
-                    +
-                    <span class="absolute left-1/2 transform -translate-x-1/2 -top-8 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                        Crear Expedición
-                    </span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Tabla de Expediciones -->
-        <div class="overflow-x-auto bg-white shadow-lg rounded-xl">
-            <table id="expedicionTable" class="min-w-full table-auto">
-                <thead>
-                    <tr class="bg-blue-100 text-blue-700">
-                        <th class="px-6 py-4 text-left">Número</th>
-                        <th class="px-6 py-4 text-left">Fecha</th>
-                        <th class="px-6 py-4 text-left">Expedición</th>
-                        <th class="px-6 py-4 text-left">Agencia</th>
-                        <th class="px-6 py-4 text-left">Cliente</th>
-                        <th class="px-6 py-4 text-left">Remitente</th>
-                        <th class="px-6 py-4 text-left">Destinatario</th>
-                        <th class="px-6 py-4 text-left">Bultos</th>
-                        <th class="px-6 py-4 text-left">Kg</th>
-                        <th class="px-6 py-4 text-left">Volumen</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for expedicion in expediciones %}
-                    <tr class="bg-gray-100">
-                        <td class="px-6 py-4">{{ expedicion.id }}</td>
-                        <td class="px-6 py-4">{{ expedicion.fecha.strftime('%d/%m/%Y') }}</td>
-                        <td class="px-6 py-4">{{ expedicion.expedicion }}</td>
-                        <td class="px-6 py-4">{{ expedicion.agencia }}</td>
-                        <td class="px-6 py-4">{{ expedicion.cliente }}</td>
-                        <td class="px-6 py-4">{{ expedicion.remitente }}</td>
-                        <td class="px-6 py-4">{{ expedicion.destinatario }}</td>
-                        <td class="px-6 py-4">{{ expedicion.bultos }}</td>
-                        <td class="px-6 py-4">{{ expedicion.kg }}</td>
-                        <td class="px-6 py-4">{{ expedicion.volumen }}</td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="10" class="text-center py-4 text-gray-500">No hay expediciones registradas.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <!-- Contenedor de filtros -->
+    <div class="flex flex-wrap gap-4 mb-4">
+        <input type="date" id="filterFechaDesde" class="p-2 border rounded-lg" placeholder="Desde">
+        <input type="date" id="filterFechaHasta" class="p-2 border rounded-lg" placeholder="Hasta">
+        <input type="text" id="filterCamion" class="p-2 border rounded-lg w-32" placeholder="Camión">
+        <button onclick="clearFilters()" class="bg-red-500 text-white px-4 py-2 rounded-lg">Limpiar Filtros</button>
     </div>
+</div>
 
-    <script>
-        function filterTable() {
-            const filterId = document.getElementById('filterId').value.toLowerCase();
-            const filterFecha = document.getElementById('filterFecha').value.toLowerCase();
-            const filterExpedicion = document.getElementById('filterExpedicion').value.toLowerCase();
-            const filterAgencia = document.getElementById('filterAgencia').value.toLowerCase();
-            const filterCliente = document.getElementById('filterCliente').value.toLowerCase();
+<!-- Sumario de expediciones -->
+<div id="summary" class="bg-blue-200 p-4 rounded-lg mb-4 text-blue-900 font-semibold">
+    <p>Expediciones: <span id="totalExpediciones">0</span>&nbsp;&nbsp;&nbsp; Bultos: <span id="totalBultos">0</span> &nbsp;&nbsp;&nbsp; Kg: <span id="totalKg">0</span>&nbsp;&nbsp;&nbsp;Volumen: <span id="totalVolumen">0</span>&nbsp;&nbsp;&nbsp;Kg Conv: <span id="totalKg_conv">0</span></p>
+    <p>Portes: <span id="totalDistribucion">0</span>&nbsp;&nbsp;&nbsp; Cargos: <span id="totalCargos">0</span> &nbsp Total: <span id="totalSuma">0</span></p>
+</div>
 
-            const rows = document.querySelectorAll('#expedicionTable tbody tr');
+<!-- Tabla de Expediciones -->
+<div class="overflow-x-auto bg-white shadow-lg rounded-xl">
+    <table id="expedicionTable" class="min-w-full table-auto">
+        <thead>
+            <tr class="bg-blue-100 text-blue-700">
+                <th class="px-6 py-4 text-left">Número</th>
+                <th class="px-6 py-4 text-left">Fecha Asig.</th>
+                <th class="px-6 py-4 text-left">Expedición</th>
+                <th class="px-6 py-4 text-left">Agencia</th>
+                <th class="px-6 py-4 text-left">Cliente</th>
+                <th class="px-6 py-4 text-left">Destinatario</th>
+                <th class="px-6 py-4 text-left">Bultos</th>
+                <th class="px-6 py-4 text-left">Kg</th>
+                <th class="px-6 py-4 text-left">Volumen</th>
+                <th class="px-6 py-4 text-left">Kg Conv</th>
+                <th class="px-6 py-4 text-left">Camion</th>
+                <th class="px-6 py-4 text-left">Distr.</th>
+                <th class="px-6 py-4 text-left">Cargo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expedicion in expediciones %}
+            <tr class="bg-gray-100">
+                <td class="px-6 py-4 text-blue-600 cursor-pointer" onclick="openEditModal('{{ expedicion.id }}')">
+                    {{ expedicion.id }}
+                </td>
+                <td class="px-6 py-4">{{ expedicion.fecha_asignacion.strftime('%d/%m/%Y') }}</td>
+                <td class="px-6 py-4">{{ expedicion.expedicion }}</td>
+                <td class="px-6 py-4">{{ expedicion.agencia_origen }}</td>
+                <td class="px-6 py-4">{{ expedicion.cliente }}</td>
+                <td class="px-6 py-4">{{ expedicion.destinatario }}</td>
+                <td class="px-6 py-4">{{ expedicion.bultos }}</td>
+                <td class="px-6 py-4">{{ expedicion.kg }}</td>
+                <td class="px-6 py-4">{{ expedicion.volumen }}</td>
+                <td class="px-6 py-4">{{ expedicion.kg_conv }}</td>
+                <td class="px-6 py-4">{{ expedicion.asignada_a }}</td>
+                <td class="px-6 py-4">{{ expedicion.ingreso_distribucion }}</td>
+                <td class="px-6 py-4">{{ expedicion.ingreso_cargo_adicional }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="15" class="text-center py-4 text-gray-500">No hay expediciones registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
 
-            rows.forEach(row => {
-                const id = row.cells[0].textContent.toLowerCase();
-                const fecha = row.cells[1].textContent.toLowerCase();
-                const expedicion = row.cells[2].textContent.toLowerCase();
-                const agencia = row.cells[3].textContent.toLowerCase();
-                const cliente = row.cells[4].textContent.toLowerCase();
+<script>
+function updateSummary() {
+    let totalExpediciones = 0;
+    let totalBultos = 0;
+    let totalKg = 0;
+    let totalVolumen = 0;
+    let totalKg_conv = 0;
+    let totalDistribucion = 0;
+    let totalCargos = 0;
 
-                if (id.includes(filterId) &&
-                    fecha.includes(filterFecha) &&
-                    expedicion.includes(filterExpedicion) &&
-                    agencia.includes(filterAgencia) &&
-                    cliente.includes(filterCliente)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
+    const rows = document.querySelectorAll('#expedicionTable tbody tr');
+
+    rows.forEach(row => {
+        if (row.style.display !== 'none') {
+            totalExpediciones++;
+            totalBultos += parseInt(row.cells[6].textContent) || 0;
+            totalKg += parseFloat(row.cells[7].textContent) || 0;
+            totalVolumen += parseFloat(row.cells[8].textContent) || 0;
+            totalKg_conv += parseFloat(row.cells[9].textContent) || 0;
+            totalDistribucion += parseFloat(row.cells[11].textContent) || 0;
+            totalCargos += parseFloat(row.cells[12].textContent) || 0;
         }
+    });
 
-        document.querySelectorAll('.p-2.border').forEach(input => {
-            input.addEventListener('input', filterTable);
-        });
+    let totalSuma = totalDistribucion + totalCargos;
 
-        function clearFilters() {
-            document.getElementById('filterId').value = "";
-            document.getElementById('filterFecha').value = "";
-            document.getElementById('filterExpedicion').value = "";
-            document.getElementById('filterAgencia').value = "";
-            document.getElementById('filterCliente').value = "";
-            filterTable();
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const dateCells = document.querySelectorAll("#expedicionTable tbody tr td:nth-child(2)");
-
-            dateCells.forEach(cell => {
-                const dateParts = cell.textContent.split("-");
-                if (dateParts.length === 3) {
-                    const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-                    cell.textContent = formattedDate;
-                }
-            });
-        });
-
-        document.getElementById("logoutBtn").addEventListener("click", function () {
-            alert("Sesión cerrada");
-            window.location.href = "/login";
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById("expedicionModal").classList.add("hidden");
-});
-
-function openModal() {
-    document.getElementById("expedicionModal").classList.remove("hidden");
+    document.getElementById('totalExpediciones').textContent = totalExpediciones;
+    document.getElementById('totalBultos').textContent = totalBultos;
+    document.getElementById('totalKg').textContent = totalKg.toFixed(0);
+    document.getElementById('totalVolumen').textContent = totalVolumen.toFixed(2);
+    document.getElementById('totalKg_conv').textContent = totalKg_conv.toFixed(0);
+    document.getElementById('totalDistribucion').textContent = totalDistribucion.toFixed(2);
+    document.getElementById('totalCargos').textContent = totalCargos.toFixed(2);
+    document.getElementById('totalSuma').textContent = totalSuma.toFixed(2);
 }
 
-function closeModal() {
-    document.getElementById("expedicionModal").classList.add("hidden");
+function filterTable() {
+    const filterFechaDesde = document.getElementById('filterFechaDesde').value;
+    const filterFechaHasta = document.getElementById('filterFechaHasta').value;
+    const filterCamion = document.getElementById('filterCamion').value.toLowerCase();
+
+    document.querySelectorAll('#expedicionTable tbody tr').forEach(row => {
+        const fecha = row.cells[1].textContent.split('/').reverse().join('-');
+        const camion = row.cells[10].textContent.toLowerCase();
+
+        let fechaValida = true;
+        if (filterFechaDesde && fecha < filterFechaDesde) fechaValida = false;
+        if (filterFechaHasta && fecha > filterFechaHasta) fechaValida = false;
+
+        if (fechaValida && camion.includes(filterCamion)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    updateSummary();
 }
 
-document.getElementById("expedicionForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    alert("Expedición creada (Aquí debes agregar la lógica para enviar los datos al backend).");
-    closeModal();
+document.querySelectorAll('.p-2.border').forEach(input => {
+    input.addEventListener('input', filterTable);
 });
-    </script>
 
-    {% include 'modal_grabar_expedicion.html' %}
+function clearFilters() {
+    document.getElementById('filterFechaDesde').value = "";
+    document.getElementById('filterFechaHasta').value = "";
+    document.getElementById('filterCamion').value = "";
+    filterTable();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    updateSummary();
+});
+
+function exportarPDF() {
+    let datos = [];
+    document.querySelectorAll('#expedicionTable tbody tr').forEach(row => {
+        if (row.style.display !== 'none') {  // Solo enviamos los datos visibles
+            let celdas = row.querySelectorAll("td");
+            datos.push({
+                id: celdas[0].textContent.trim(),
+                fecha: celdas[1].textContent.trim(),
+                expedicion: celdas[2].textContent.trim(),
+                agencia: celdas[3].textContent.trim(),
+                cliente: celdas[4].textContent.trim(),
+                remitente: celdas[5].textContent.trim(),
+                destinatario: celdas[6].textContent.trim(),
+                bultos: celdas[7].textContent.trim(),
+                kg: celdas[8].textContent.trim(),
+                volumen: celdas[9].textContent.trim(),
+                kg_conv: celdas[10].textContent.trim(),
+                camion: celdas[11].textContent.trim(),
+                ingreso_distribucion: celdas[12].textContent.trim(),
+                ingreso_cargo_adicional: celdas[13].textContent.trim()
+            });
+        }
+    });
+
+    fetch('/exportar_pdf_facturacion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: datos })
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = "expediciones.pdf";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    })
+    .catch(error => console.error('Error exportando PDF:', error));
+}
+
+function openEditModal(expedicionId) {
+    window.location.href = "/facturacion?id=" + expedicionId;
+}
+</script>
+{% include 'modal_editar_expedicion.html' %}
 </body>
 </html>

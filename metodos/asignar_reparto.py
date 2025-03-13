@@ -10,12 +10,15 @@ def ruta_asignar_reparto(app):
         vehiculo = request.args.get('matricula') or request.form.get('matricula')
         fecha_asignacion_str = request.args.get('fecha_asignacion') or request.form.get('fecha_asignacion')
 
-        try:
-            fecha_asignacion = datetime.strptime(fecha_asignacion_str, '%Y-%m-%d %H:%M:%S')
-        except ValueError:
-            # Intentar solo la fecha si el tiempo no está incluido
-            fecha_asignacion = datetime.strptime(fecha_asignacion_str, '%Y-%m-%d')
-
+        if fecha_asignacion_str:
+            try:
+                fecha_asignacion = datetime.strptime(fecha_asignacion_str, '%Y-%m-%d %H:%M:%S')
+            except ValueError:
+                try:
+                    # Intentar solo la fecha si el tiempo no está incluido
+                    fecha_asignacion = datetime.strptime(fecha_asignacion_str, '%Y-%m-%d')
+                except ValueError:
+                    return "Formato de fecha incorrecto", 400
 
         expediciones_asignadas = db.session.query(Expedicion).filter(
 

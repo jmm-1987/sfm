@@ -16,7 +16,7 @@ def ruta_editar_expedicion(app):
             fecha_str = request.form['fecha']
             fecha_obj = datetime.strptime(fecha_str, "%Y-%m-%d").date()
             expedicion.fecha = fecha_obj
-            expedicion.numero = request.form['expedicion']
+            expedicion.expedicion = request.form['expedicion']
             expedicion.cliente = request.form['cliente']
             expedicion.agencia_origen = request.form['agencia_origen']
             expedicion.agencia_destino = request.form['agencia_destino']

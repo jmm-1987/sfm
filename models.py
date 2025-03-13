@@ -20,7 +20,7 @@ class Expedicion(Base):
 
     id = Column(Integer, Sequence('id_seq', start=1000, increment=1),primary_key=True, nullable=False)
     fecha = Column(DateTime, nullable=False)
-    expedicion = Column(String, nullable=True)
+    expedicion = Column(String, nullable=False)
     referencia = Column(String, nullable=True, default="N/A")
     referencia2 = Column(String, nullable=True,  default="N/A")
     agencia_origen = Column(String(200), nullable=False)
@@ -70,6 +70,8 @@ class Expedicion(Base):
     incidencia_ampliacion = Column(String(200), nullable=True)
     dev_alb_firmado = Column(Boolean, default=False)
 
+
+
     __table_args__ = (
         UniqueConstraint('expedicion', 'cliente', name='_expedicion_cliente_uc'),
     )
@@ -86,7 +88,9 @@ class Expedicion(Base):
                  coste_distribucion=0.0, tlf_remitente=0, tlf_destinatario=0, albaran_entrega=False, albaran_cliente=False, observaciones="",
                  referencia2=None):
         self.fecha = fecha
+
         self.expedicion = expedicion
+
         self.referencia = referencia
         self.referencia2 = referencia2
         self.agencia_origen = agencia_origen
