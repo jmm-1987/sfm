@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Registro de Chofer</title>
+</head>
+<body>
+
+<!-- Modal -->
+<div id="vehiculoModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 p-8">
+        <h2 class="text-2xl font-bold mb-6 text-blue-700 text-center">Registro de Chofer</h2>
+
+        <form id="choferForm" method="POST" action="{{ url_for('grabar_chofer') }}">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Datos del Chofer -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Datos del Conductor</h3>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div>
+                            <label class="block text-sm mb-1">Alias</label>
+                            <input type="text" name="alias" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">Nombre Completp</label>
+                            <input type="text" name="nombre_completo" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">Dni</label>
+                            <input type="text" name="dni" class="w-full p-2 border rounded">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Otros -->
+                <div class="bg-gray-200 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-3 text-blue-600">Otros datos</h3>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div>
+                            <label class="block text-sm mb-1">Notas</label>
+                            <input type="textarea" name="notas" class="w-full p-2 border rounded">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado -->
+            <div class="bg-gray-100 p-4 rounded-lg mt-6">
+                <div class="flex items-center">
+                    <input type="checkbox" name="activo" class="mr-2" checked>
+                    <label class="text-sm">Activo</label>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-end space-x-4 mt-6">
+                <button type="button" onclick="closeModal()" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">Cancelar</button>
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Botón para abrir el modal -->
+
+
+<!-- Script para abrir y cerrar el modal -->
+<script>
+    function openModal() {
+        document.getElementById('vehiculoModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('vehiculoModal').classList.add('hidden');
+    }
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const inputs = document.querySelectorAll('input[type="text"], textarea');
+        inputs.forEach(input => {
+            input.addEventListener('input', (event) => {
+                event.target.value = event.target.value.toUpperCase();
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

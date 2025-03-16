@@ -213,6 +213,27 @@ class Cliente(Base):
     def __str__(self):
         return f"Cliente: {self.alias} ({'Activo' if self.activo else 'Inactivo'})"
 
+class Chofer(Base):
+    __tablename__ = "chofer"
+
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    alias = Column(String(50), nullable=False)
+    nombre_completo = Column(String(200), nullable=False)
+    dni = Column(String(20), unique=True, nullable=True)
+    notas = Column(String(500), nullable=True)
+    activo = Column(Boolean, default=True, nullable=False)
+
+    def __init__(self,alias, nombre_completo, dni=None, notas=None, activo=True):
+        self.alias = alias
+        self.nombre_completo = nombre_completo
+        self.dni = dni
+        self.notas = notas
+        self.activo = activo
+
+
+    def __str__(self):
+        return f"Chofer: {self.nombre_completo} ({self.dni})"
+
 class Vehiculo(Base):
     __tablename__ = "vehiculo"
 
@@ -225,8 +246,9 @@ class Vehiculo(Base):
     caducidad_tacografo = Column(Date, nullable=True)
     chofer_habitual = Column(String(200), nullable=True)
     activo = Column(Boolean, default=True, nullable=False)
+    documento = Column(String(200), nullable=True)
 
-    def __init__(self, matricula,alias=None, capacidad=0, caducidad_itv="99/99/9999 00:00:00", caducidad_seguro=None, caducidad_tacografo=None, chofer_habitual=None, activo=True):
+    def __init__(self, matricula,alias=None, capacidad=0, caducidad_itv="99/99/9999 00:00:00", caducidad_seguro=None, caducidad_tacografo=None, chofer_habitual=None, documento=None, activo=True):
         self.matricula = matricula
         self.capacidad = capacidad
         self.caducidad_itv = caducidad_itv
@@ -235,6 +257,7 @@ class Vehiculo(Base):
         self.chofer_habitual = chofer_habitual
         self.activo = activo
         self.alias = alias
+        self.documento = documento
 
     def __str__(self):
         return f"Vehículo: {self.matricula} ({'Activo' if self.activo else 'Inactivo'})"

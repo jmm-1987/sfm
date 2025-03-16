@@ -3,7 +3,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 import db
 import os
 from datetime import date, datetime
-from models import User, Expedicion, Cliente, Vehiculo
+from models import User, Expedicion, Cliente, Chofer, Vehiculo
 from metodos.grabar_expedicion import ruta_grabar_expedidion
 from metodos.grabar_cliente import ruta_grabar_cliente
 from metodos.grabar_vehiculo import ruta_grabar_vehiculo
@@ -23,6 +23,8 @@ from metodos.obtener_datos_cliente_js import ruta_obtener_datos_cliente_js
 from metodos.eliminar_expedicion import ruta_eliminar_expedicion
 from metodos.exportar_pdf_listado import ruta_exportar_pdf_listado
 from metodos.desasignar_expedicion import ruta_desasignar_expedicion
+from metodos.grabar_chofer import ruta_grabar_chofer
+from metodos.editar_chofer import ruta_editar_chofer
 
 
 # Configuración de la app Flask
@@ -55,6 +57,8 @@ ruta_obtener_datos_cliente_js(app)
 ruta_exportar_pdf_listado(app)
 ruta_desasignar_expedicion(app)
 ruta_eliminar_expedicion(app)
+ruta_grabar_chofer(app)
+ruta_editar_chofer(app)
 
 
 
@@ -117,6 +121,18 @@ def vehiculos_inactivos():
 def importaciones():
 
     return render_template("importaciones.html")
+
+@app.route('/repartidores')
+@login_required
+def repartidores():
+    choferes = db.session.query(Chofer).filter(Chofer.activo == True).all()
+    return render_template("repartidores.html", choferes=choferes)
+
+@app.route('/repartidores_inactivos')
+@login_required
+def repartidores_inactivos():
+    choferes = db.session.query(Chofer).filter(Chofer.activo == False).all()
+    return render_template("repartidores.html", choferes=choferes, mostrando_inactivos=True)
 
 
 @app.route('/repartos')
