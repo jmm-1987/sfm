@@ -64,6 +64,16 @@
                     </div>
                 </div>
 
+                {% for doc in vehiculos_doc %}
+                    {% if doc.matricula == matricula_doc %}
+                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M7 7h10M7 11h10M7 15h6M5 5v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2z" />
+                        </svg>
+                    {% endif %}
+                {% endfor %}
+
                 <!-- Botones -->
                 <div class="flex justify-end space-x-4 mt-6">
                     <button type="button" onclick="cerrarEditarModal()" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">Cancelar</button>
@@ -85,6 +95,8 @@
         </div>
     </div>
 </form>
+    </div>
+
         </div>
     </div>
 <script>

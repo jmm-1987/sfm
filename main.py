@@ -3,7 +3,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 import db
 import os
 from datetime import date, datetime
-from models import User, Expedicion, Cliente, Chofer, Vehiculo
+from models import User, Expedicion, Cliente, Chofer, Vehiculo, DocumentoVehiculo
 from metodos.grabar_expedicion import ruta_grabar_expedidion
 from metodos.grabar_cliente import ruta_grabar_cliente
 from metodos.grabar_vehiculo import ruta_grabar_vehiculo
@@ -106,7 +106,8 @@ def login():
 @login_required
 def vehiculos():
     vehiculos = db.session.query(Vehiculo).filter(Vehiculo.activo == True).all()
-    return render_template("vehiculos.html", vehiculos=vehiculos)
+    vehiculos_doc = db.session.query(DocumentoVehiculo).all()
+    return render_template("vehiculos.html", vehiculos=vehiculos, vehiculos_doc=vehiculos_doc)
 
 
 @app.route('/vehiculos_inactivos')
@@ -114,8 +115,9 @@ def vehiculos():
 def vehiculos_inactivos():
     # Filtrar solo los vehículos inactivos
     vehiculos = db.session.query(Vehiculo).filter(Vehiculo.activo == False).all()
+    vehiculos_doc = db.session.query(DocumentoVehiculo).all()
 
-    return render_template("vehiculos.html", vehiculos=vehiculos, mostrando_inactivos=True)
+    return render_template("vehiculos.html", vehiculos_doc=vehiculos_doc, vehiculos=vehiculos, mostrando_inactivos=True)
 
 
 @app.route('/importaciones')
