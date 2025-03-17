@@ -25,6 +25,7 @@ from metodos.exportar_pdf_listado import ruta_exportar_pdf_listado
 from metodos.desasignar_expedicion import ruta_desasignar_expedicion
 from metodos.grabar_chofer import ruta_grabar_chofer
 from metodos.editar_chofer import ruta_editar_chofer
+from metodos.subir_doc_vehiculo import ruta_subir_documento
 
 
 # Configuración de la app Flask
@@ -59,6 +60,7 @@ ruta_desasignar_expedicion(app)
 ruta_eliminar_expedicion(app)
 ruta_grabar_chofer(app)
 ruta_editar_chofer(app)
+ruta_subir_documento(app)
 
 
 
@@ -138,7 +140,7 @@ def repartidores_inactivos():
 @app.route('/repartos')
 @login_required
 def repartos():
-    vehiculos = db.session.query(Vehiculo.matricula).filter(Vehiculo.activo == True).all()
+    choferes = db.session.query(Chofer.alias).filter(Chofer.activo == True).all()
     clientes = db.session.query(Cliente).filter(Cliente.activo == True).all()
     agencias = ["SFM","PALLEX","SEYTRA","TyD","TEDi","REDPALLETS"]
     tipo_bulto = ["KG","MQTR","QTR","MLIGHT","HALF","LIGHT","FULL","MEGAFULL"]
@@ -148,7 +150,7 @@ def repartos():
     fecha_actual = date.today().strftime('%Y-%m-%d')
 
     return render_template("repartos.html", expediciones=expediciones, clientes=clientes,
-                           vehiculos=vehiculos, expedicion=expedicion, agencias=agencias, fecha_actual=fecha_actual,
+                           choferes=choferes, expedicion=expedicion, agencias=agencias, fecha_actual=fecha_actual,
                            tipo_bulto=tipo_bulto)
 
 @app.route('/impresion_listados_reparto')

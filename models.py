@@ -281,3 +281,12 @@ class Vehiculo(Base):
 
         def __str__(self):
             return f"Incidencia: {self.tipo} - {self.descripcion[:20]}... (Expedición ID: {self.id_expedicion})"
+
+
+class DocumentoVehiculo(Base):
+    __tablename__ = 'documentos_vehiculo'
+
+    id = Column(Integer, primary_key=True)
+    matricula = Column(String(255), nullable=False)
+    archivo = Column(String(255), nullable=False)
+

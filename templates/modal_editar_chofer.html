@@ -26,7 +26,7 @@
                                 <input type="text" name="alias" id="alias" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200" readonly>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Nombre Compleot</label>
+                                <label class="block text-sm font-medium text-gray-700">Nombre Completo</label>
                                 <input type="text" name="nombre_completo" id="nombre_completo" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200" required>
                             </div>
                             <div>
@@ -65,8 +65,8 @@
         </div>
     </div>
 <script>
-    function abrirEditarModal(alias, nombre_completo, dni, notas,activo) {
-        let form = document.getElementById("editarVehiculoForm");
+    function abrirEditarModal(alias, nombre_completo, dni, notas, activo) {
+        let form = document.getElementById("form_editar_chofer");
 
         // Actualizar la URL del formulario para enviar la matrícula
         form.action = "/editar_chofer/" + encodeURIComponent(alias);
@@ -97,4 +97,3 @@
 
 </body>
 </html>
-

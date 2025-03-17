@@ -70,6 +70,21 @@
                     <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Guardar Cambios</button>
                 </div>
             </form>
+            <form action="/subir_doc_vehiculo" method="POST" enctype="multipart/form-data">
+    <div class="bg-gray-100 p-4 rounded-lg mt-6">
+        <h3 class="text-lg font-semibold mb-3 text-blue-600">Subir Documento</h3>
+        <div class="grid grid-cols-1 gap-3">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Documento</label>
+                <input type="file" name="documento" id="documento" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200" required>
+                <input type="hidden" name="matricula_doc" id="matricula_doc" value="">
+            </div>
+            <div>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Subir Documento</button>
+            </div>
+        </div>
+    </div>
+</form>
         </div>
     </div>
 <script>
@@ -87,6 +102,7 @@
         document.getElementById("caducidad_seguro").value = seguro;
         document.getElementById("caducidad_tacografo").value = tacografo;
         document.getElementById("activo").checked = activo;
+        document.getElementById("matricula_doc").value = matricula;
 
         // Mostrar el modal
         document.getElementById("modal_editar_vehiculo").classList.remove("hidden");
