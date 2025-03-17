@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 import random
 import string
-from models import Vehiculo
+from models import Vehiculo, DocumentoVehiculo
 import db
 
 def ruta_subir_documento(app):
@@ -42,7 +42,13 @@ def ruta_subir_documento(app):
         os.makedirs(os.path.dirname(ruta_absoluta), exist_ok=True)
         archivo.save(ruta_absoluta)
 
-        vehiculo.documento = ruta_relativa
+        nuevo_doc = DocumentoVehiculo(
+            matricula = matricula,
+            nombre_archivo=filename,
+            ruta = ruta_relativa,
+        )
+        db.session.add(nuevo_doc)
+
         db.session.commit()
 
         flash('Documento subido y asociado correctamente')

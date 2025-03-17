@@ -288,5 +288,6 @@ class DocumentoVehiculo(Base):
 
     id = Column(Integer, primary_key=True)
     matricula = Column(String(255), nullable=False)
-    archivo = Column(String(255), nullable=False)
+    nombre_archivo = Column(String(255), nullable=False)
+    ruta = Column(String(255), nullable=False)
 
