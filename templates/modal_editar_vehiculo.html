@@ -63,40 +63,36 @@
                         <label class="text-sm font-medium text-gray-700">Activo</label>
                     </div>
                 </div>
-                </br>
-                <div x-data="{ abiertoLista: false }" class="bg-gray-100 rounded-lg mt-6 p-4">
-    <div class="flex items-center justify-between cursor-pointer" @click="abiertoLista = !abiertoLista">
-        <h3 class="text-lg font-semibold text-blue-600">📄 Documentos del Vehículo</h3>
-        <span class="text-blue-600 text-xl" x-text="abiertoLista ? '−' : '+'"></span>
-    </div>
-
-    <div x-show="abiertoLista" x-transition class="mt-4">
-        <ul class="space-y-2">
-            {% for doc in vehiculos_doc %}
-                {% if doc.matricula == vehiculo_seleccionado.matricula %}
-                    <li class="flex justify-between items-center bg-white p-2 rounded-md shadow-sm">
-                        <a href="{{ doc.ruta }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
-                            📄 {{ doc.nombre }}
-                        </a>
-                        <form action="/eliminar_documento" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este documento?');">
-                            <input type="hidden" name="documento_id" value="{{ doc.id }}">
-                            <button type="submit" class="text-red-500 hover:text-red-700 text-sm">
-                                🗑️ Eliminar
-                            </button>
-                        </form>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-
-
-
                 <!-- Botones -->
                 <div class="flex justify-end space-x-4 mt-6">
                     <button type="button" onclick="cerrarEditarModal()" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">Cancelar</button>
                     <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Guardar Cambios</button>
+                </div>
+        </form>
+                <div x-data="{ abiertoLista: false }" class="bg-gray-100 rounded-lg mt-6 p-4">
+                    <div class="flex items-center justify-between cursor-pointer" @click="abiertoLista = !abiertoLista">
+                        <h3 class="text-lg font-semibold text-blue-600">📄 Documentos del Vehículo</h3>
+                        <span class="text-blue-600 text-xl" x-text="abiertoLista ? '−' : '+'"></span>
+                </div>
+
+                <div x-show="abiertoLista" x-transition class="mt-4">
+                     <ul class="space-y-2">
+                         {% for doc in vehiculos_doc %}
+                            {% if doc.matricula == vehiculo_seleccionado.matricula %}
+                            <li class="flex justify-between items-center bg-white p-2 rounded-md shadow-sm">
+                                <a href="{{ doc.ruta }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+                                📄 {{ doc.nombre }}
+                                </a>
+                                <form action="/eliminar_documento" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este documento?');">
+                                    <input type="hidden" name="documento_id" value="{{ doc.id }}">
+                                    <button type="submit" class="text-red-500 hover:text-red-700 text-sm">
+                                     🗑️ Eliminar
+                                    </button>
+                                </form>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                    </ul>
                 </div>
             </form>
             <!-- Sección plegable con Alpine.js -->

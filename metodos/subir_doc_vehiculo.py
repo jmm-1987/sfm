@@ -1,5 +1,4 @@
 from flask import request, redirect, url_for, flash
-from werkzeug.utils import secure_filename
 import os
 import random
 import string
@@ -52,4 +51,37 @@ def ruta_subir_documento(app):
         db.session.commit()
 
         flash('Documento subido y asociado correctamente')
-        return redirect(url_for('vehiculos', matricula=vehiculo.matricula))
+        return redirect(request.referrer)
+
+    @app.route('/eliminar_documento', methods=['POST'])
+    def eliminar_documento():
+        documento_id = request.form.get('documento_id')
+        print(documento_id)
+
+        if not documento_id:
+            flash('ID de documento no proporcionado', 'error')
+            return redirect(request.referrer)
+
+        documento = db.session.query(DocumentoVehiculo).filter_by(id=documento_id).first()
+        print(documento)
+
+        if not documento:
+            flash('Documento no encontrado', 'error')
+            return redirect(request.referrer)
+
+        # Ruta absoluta del archivo en el sistema
+        ruta_absoluta = os.path.join(app.root_path, documento.ruta)
+
+        # Eliminar archivo físico si existe
+        if os.path.exists(ruta_absoluta):
+            try:
+                os.remove(ruta_absoluta)
+            except Exception as e:
+                flash(f'Error al eliminar el archivo físico: {str(e)}', 'error')
+
+        # Eliminar de la base de datos
+        db.session.delete(documento)
+        db.session.commit()
+
+        flash('Documento eliminado correctamente', 'success')
+        return redirect(request.referrer)
