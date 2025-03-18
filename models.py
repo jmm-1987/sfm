@@ -291,3 +291,12 @@ class DocumentoVehiculo(Base):
     nombre_archivo = Column(String(255), nullable=False)
     ruta = Column(String(255), nullable=False)
 
+class DocumentoExpedicion(Base):
+    __tablename__ = 'documentos_expedicion'
+
+    id = Column(Integer, primary_key=True)
+    numero = Column(String(255), nullable=False)
+    nombre_archivo = Column(String(255), nullable=False)
+    categoria = Column(Enum("pod", "alb_cliente", name="categoria_enum"),nullable=False)
+    ruta = Column(String(255), nullable=False)
+
