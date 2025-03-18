@@ -36,7 +36,7 @@ def ruta_subir_documento(app):
         extension = archivo.filename.rsplit('.', 1)[1].lower()
         filename = generar_nombre_archivo(matricula, extension)
 
-        ruta_relativa = os.path.join('uploads/doc_vehiculos', filename)
+        ruta_relativa = os.path.join('static/doc_vehiculos', filename)
         ruta_absoluta = os.path.join(app.root_path, ruta_relativa)
 
         os.makedirs(os.path.dirname(ruta_absoluta), exist_ok=True)

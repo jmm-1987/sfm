@@ -141,17 +141,9 @@
                 <tbody>
     {% for vehiculo in vehiculos %}
     <tr class="bg-gray-100 hover:bg-gray-200">
-        <td class="px-6 py-4 text-blue-600 hover:underline">
-            <a href="javascript:void(0);"
-   onclick="abrirEditarModal('{{ vehiculo.matricula }}',
-                              '{{ vehiculo.capacidad }}',
-                              '{{ vehiculo.chofer_habitual }}',
-                              '{{ vehiculo.caducidad_itv.strftime('%Y-%m-%d') if vehiculo.caducidad_itv else '' }}',
-                              '{{ vehiculo.caducidad_seguro.strftime('%Y-%m-%d') if vehiculo.caducidad_seguro else '' }}',
-                              '{{ vehiculo.caducidad_tacografo.strftime('%Y-%m-%d') if vehiculo.caducidad_tacografo else '' }}',
-                              {{ 'true' if vehiculo.activo else 'false' }})">
-    {{ vehiculo.matricula }}
-</a>
+        <tr class="bg-gray-100">
+        <td class="px-6 py-4 text-blue-600 cursor-pointer">
+            <a href="/vehiculos?id={{ vehiculo.id }}">{{ vehiculo.matricula }}</a>
         </td>
         <td class="px-6 py-4">{{ vehiculo.capacidad }}</td>
         <td class="px-6 py-4">{{ vehiculo.caducidad_itv.strftime('%d/%m/%Y') if vehiculo.caducidad_itv else '' }}</td>
@@ -170,6 +162,22 @@
             </table>
         </div>
     </div>
+
+    {% if vehiculo_seleccionado %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        abrirEditarModal(
+            "{{ vehiculo_seleccionado.matricula }}",
+            "{{ vehiculo_seleccionado.capacidad }}",
+            "{{ vehiculo_seleccionado.chofer_habitual }}",
+            "{{ vehiculo_seleccionado.caducidad_itv or '' }}",
+            "{{ vehiculo_seleccionado.caducidad_seguro or '' }}",
+            "{{ vehiculo_seleccionado.caducidad_tacografo or '' }}",
+            {{ 'true' if vehiculo_seleccionado.activo else 'false' }}
+        );
+    });
+</script>
+{% endif %}
 
 <script>
 
@@ -192,8 +200,13 @@ function abrirEditarModal(matricula, capacidad, chofer, itv, seguro, tacografo, 
     document.getElementById("caducidad_tacografo").value = tacografo;
     document.getElementById("activo").checked = activo;
 
+
     // Muestra el modal
     document.getElementById("modal_editar_vehiculo").classList.remove("hidden");
+}
+
+function openEditModalVehiculo(vehiculoId) {
+    window.location.href = "/vehiculo?id=" + vehiculoId;
 }
 
 

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, jsonify, send_file
+from flask import Flask, render_template, redirect, url_for, request, jsonify, send_file, send_from_directory
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 import db
 import os
@@ -107,8 +107,18 @@ def login():
 def vehiculos():
     vehiculos = db.session.query(Vehiculo).filter(Vehiculo.activo == True).all()
     vehiculos_doc = db.session.query(DocumentoVehiculo).all()
-    return render_template("vehiculos.html", vehiculos=vehiculos, vehiculos_doc=vehiculos_doc)
 
+    vehiculo_id = request.args.get("id")
+    vehiculo_seleccionado = None
+    if vehiculo_id:
+        vehiculo_seleccionado = db.session.query(Vehiculo).filter_by(id=vehiculo_id).first()
+
+    return render_template(
+        "vehiculos.html",
+        vehiculos=vehiculos,
+        vehiculos_doc=vehiculos_doc,
+        vehiculo_seleccionado=vehiculo_seleccionado
+    )
 
 @app.route('/vehiculos_inactivos')
 @login_required
@@ -119,6 +129,10 @@ def vehiculos_inactivos():
 
     return render_template("vehiculos.html", vehiculos_doc=vehiculos_doc, vehiculos=vehiculos, mostrando_inactivos=True)
 
+@app.route('/ruta_documento/<path:filename>')
+def ruta_documento(filename):
+    uploads = os.path.join(app.root_path, 'uploads')
+    return send_from_directory(directory=uploads, path=filename)
 
 @app.route('/importaciones')
 @login_required

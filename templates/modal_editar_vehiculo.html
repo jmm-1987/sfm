@@ -63,16 +63,35 @@
                         <label class="text-sm font-medium text-gray-700">Activo</label>
                     </div>
                 </div>
+                </br>
+                <div x-data="{ abiertoLista: false }" class="bg-gray-100 rounded-lg mt-6 p-4">
+    <div class="flex items-center justify-between cursor-pointer" @click="abiertoLista = !abiertoLista">
+        <h3 class="text-lg font-semibold text-blue-600">📄 Documentos del Vehículo</h3>
+        <span class="text-blue-600 text-xl" x-text="abiertoLista ? '−' : '+'"></span>
+    </div>
 
-                {% for doc in vehiculos_doc %}
-                    {% if doc.matricula == matricula_doc %}
-                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M7 7h10M7 11h10M7 15h6M5 5v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2z" />
-                        </svg>
-                    {% endif %}
-                {% endfor %}
+    <div x-show="abiertoLista" x-transition class="mt-4">
+        <ul class="space-y-2">
+            {% for doc in vehiculos_doc %}
+                {% if doc.matricula == vehiculo_seleccionado.matricula %}
+                    <li class="flex justify-between items-center bg-white p-2 rounded-md shadow-sm">
+                        <a href="{{ doc.ruta }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+                            📄 {{ doc.nombre }}
+                        </a>
+                        <form action="/eliminar_documento" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este documento?');">
+                            <input type="hidden" name="documento_id" value="{{ doc.id }}">
+                            <button type="submit" class="text-red-500 hover:text-red-700 text-sm">
+                                🗑️ Eliminar
+                            </button>
+                        </form>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+
 
                 <!-- Botones -->
                 <div class="flex justify-end space-x-4 mt-6">
@@ -80,21 +99,29 @@
                     <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Guardar Cambios</button>
                 </div>
             </form>
-            <form action="/subir_doc_vehiculo" method="POST" enctype="multipart/form-data">
-    <div class="bg-gray-100 p-4 rounded-lg mt-6">
-        <h3 class="text-lg font-semibold mb-3 text-blue-600">Subir Documento</h3>
-        <div class="grid grid-cols-1 gap-3">
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Documento</label>
-                <input type="file" name="documento" id="documento" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200" required>
-                <input type="hidden" name="matricula_doc" id="matricula_doc" value="">
-            </div>
-            <div>
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Subir Documento</button>
-            </div>
-        </div>
+            <!-- Sección plegable con Alpine.js -->
+<div x-data="{ abierto: false }" class="bg-gray-100 rounded-lg mt-6 p-4">
+    <div class="flex items-center justify-between cursor-pointer" @click="abierto = !abierto">
+        <h3 class="text-lg font-semibold text-blue-600">📎 Subir Documento</h3>
+        <span class="text-blue-600 text-xl" x-text="abierto ? '−' : '+'"></span>
     </div>
-</form>
+
+    <!-- Contenido que se pliega -->
+    <div x-show="abierto" x-transition class="mt-4">
+        <form action="/subir_doc_vehiculo" method="POST" enctype="multipart/form-data">
+            <div class="grid grid-cols-1 gap-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Documento</label>
+                    <input type="file" name="documento" id="documento" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200" required>
+                    <input type="hidden" name="matricula_doc" id="matricula_doc" value="">
+                </div>
+                <div>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Subir Documento</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
     </div>
 
         </div>
@@ -106,6 +133,7 @@
         // Actualizar la URL del formulario para enviar la matrícula
         form.action = "/editar_vehiculo/" + encodeURIComponent(matricula);
 
+
         // Llenar los campos con los valores recibidos
         document.getElementById("matricula").value = matricula;
         document.getElementById("capacidad").value = capacidad;
@@ -115,6 +143,7 @@
         document.getElementById("caducidad_tacografo").value = tacografo;
         document.getElementById("activo").checked = activo;
         document.getElementById("matricula_doc").value = matricula;
+
 
         // Mostrar el modal
         document.getElementById("modal_editar_vehiculo").classList.remove("hidden");
