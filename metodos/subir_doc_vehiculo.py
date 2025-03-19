@@ -4,6 +4,16 @@ import random
 import string
 from models import Vehiculo, DocumentoVehiculo
 import db
+import paramiko
+from flask import send_file, abort
+from io import BytesIO
+
+# Datos del SFTP
+SFTP_HOST = "access-5017125124.webspace-host.com"
+SFTP_PORT = 22
+SFTP_USER = "a632109"
+SFTP_PASS = "924-Tx%20.2"  # Reemplaza esto con la contraseña correcta
+SFTP_DIR = "/sfm/vehiculos/"  # Ruta donde guardarás los archivos en el servidor
 
 def ruta_subir_documento(app):
     @app.route('/subir_doc_vehiculo', methods=['POST'])
@@ -31,53 +41,73 @@ def ruta_subir_documento(app):
             flash('Vehículo no encontrado')
             return redirect(request.referrer)
 
-        # Extraer extensión
         extension = archivo.filename.rsplit('.', 1)[1].lower()
         filename = generar_nombre_archivo(matricula, extension)
 
-        ruta_relativa = os.path.join('static/doc_vehiculos', filename)
-        ruta_absoluta = os.path.join(app.root_path, ruta_relativa)
+        # Conexión SFTP
+        try:
+            transport = paramiko.Transport((SFTP_HOST, SFTP_PORT))
+            transport.connect(username=SFTP_USER, password=SFTP_PASS)
+            sftp = paramiko.SFTPClient.from_transport(transport)
 
-        os.makedirs(os.path.dirname(ruta_absoluta), exist_ok=True)
-        archivo.save(ruta_absoluta)
+            # Crear carpeta si no existe
+            try:
+                sftp.chdir(SFTP_DIR)
+            except IOError:
+                sftp.mkdir(SFTP_DIR)
+                sftp.chdir(SFTP_DIR)
 
+            remote_path = f"{SFTP_DIR}{filename}"
+            file_data = archivo.read()
+            sftp.putfo(BytesIO(file_data), remote_path)
+
+            sftp.close()
+            transport.close()
+        except Exception as e:
+            flash(f"Error al subir al SFTP: {str(e)}", "error")
+            return redirect(request.referrer)
+
+        # Guardar en base de datos
         nuevo_doc = DocumentoVehiculo(
-            matricula = matricula,
+            matricula=matricula,
             nombre_archivo=filename,
-            ruta = ruta_relativa,
+            ruta=remote_path,  # ruta remota
         )
         db.session.add(nuevo_doc)
-
         db.session.commit()
 
-        flash('Documento subido y asociado correctamente')
+        flash('Documento subido correctamente al servidor SFTP')
         return redirect(request.referrer)
 
     @app.route('/eliminar_documento', methods=['POST'])
     def eliminar_documento():
         documento_id = request.form.get('documento_id')
-        print(documento_id)
 
         if not documento_id:
             flash('ID de documento no proporcionado', 'error')
             return redirect(request.referrer)
 
         documento = db.session.query(DocumentoVehiculo).filter_by(id=documento_id).first()
-        print(documento)
 
         if not documento:
             flash('Documento no encontrado', 'error')
             return redirect(request.referrer)
 
-        # Ruta absoluta del archivo en el sistema
-        ruta_absoluta = os.path.join(app.root_path, documento.ruta)
+        # Eliminar archivo del servidor SFTP
+        try:
+            transport = paramiko.Transport((SFTP_HOST, SFTP_PORT))
+            transport.connect(username=SFTP_USER, password=SFTP_PASS)
+            sftp = paramiko.SFTPClient.from_transport(transport)
 
-        # Eliminar archivo físico si existe
-        if os.path.exists(ruta_absoluta):
             try:
-                os.remove(ruta_absoluta)
-            except Exception as e:
-                flash(f'Error al eliminar el archivo físico: {str(e)}', 'error')
+                sftp.remove(documento.ruta)
+            except FileNotFoundError:
+                flash('Archivo no encontrado en el servidor SFTP (ya fue eliminado o ruta incorrecta)', 'warning')
+
+            sftp.close()
+            transport.close()
+        except Exception as e:
+            flash(f'Error al conectar al servidor SFTP para eliminar archivo: {str(e)}', 'error')
 
         # Eliminar de la base de datos
         db.session.delete(documento)
@@ -85,3 +115,34 @@ def ruta_subir_documento(app):
 
         flash('Documento eliminado correctamente', 'success')
         return redirect(request.referrer)
+
+    @app.route('/ver_documento/<path:nombre_archivo>')
+    def ver_documento(nombre_archivo):
+        try:
+            transport = paramiko.Transport((SFTP_HOST, SFTP_PORT))
+            transport.connect(username=SFTP_USER, password=SFTP_PASS)
+            sftp = paramiko.SFTPClient.from_transport(transport)
+
+            remote_path = f"{SFTP_DIR}{nombre_archivo}"
+            file_data = BytesIO()
+            sftp.getfo(remote_path, file_data)
+            file_data.seek(0)
+
+            sftp.close()
+            transport.close()
+
+            # Tipo de contenido básico (puedes mejorarlo usando mimetypes si quieres)
+            extension = nombre_archivo.rsplit('.', 1)[-1].lower()
+            mimetypes = {
+                'pdf': 'application/pdf',
+                'jpg': 'image/jpeg',
+                'jpeg': 'image/jpeg',
+                'png': 'image/png'
+            }
+            content_type = mimetypes.get(extension, 'application/octet-stream')
+
+            return send_file(file_data, mimetype=content_type, download_name=nombre_archivo)
+
+        except Exception as e:
+            print(f"Error al mostrar el documento: {str(e)}")
+            abort(404)

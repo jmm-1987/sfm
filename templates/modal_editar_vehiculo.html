@@ -77,22 +77,22 @@
 
                 <div x-show="abiertoLista" x-transition class="mt-4">
                      <ul class="space-y-2">
-                         {% for doc in vehiculos_doc %}
-                            {% if doc.matricula == vehiculo_seleccionado.matricula %}
-                            <li class="flex justify-between items-center bg-white p-2 rounded-md shadow-sm">
-                                <a href="{{ doc.ruta }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
-                                📄 {{ doc.nombre }}
-                                </a>
-                                <form action="/eliminar_documento" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este documento?');">
-                                    <input type="hidden" name="documento_id" value="{{ doc.id }}">
-                                    <button type="submit" class="text-red-500 hover:text-red-700 text-sm">
-                                     🗑️ Eliminar
-                                    </button>
-                                </form>
-                            </li>
-                            {% endif %}
-                            {% endfor %}
-                    </ul>
+    {% for doc in vehiculos_doc %}
+        {% if doc.matricula == vehiculo_seleccionado.matricula %}
+        <li class="flex justify-between items-center bg-white p-2 rounded-md shadow-sm">
+            <a href="{{ url_for('ver_documento', nombre_archivo=doc.nombre_archivo) }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+                📄 {{ doc.nombre_archivo }}
+            </a>
+            <form action="/eliminar_documento" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este documento?');">
+                <input type="hidden" name="documento_id" value="{{ doc.id }}">
+                <button type="submit" class="text-red-500 hover:text-red-700 text-sm ml-4">
+                    🗑️ Eliminar
+                </button>
+            </form>
+        </li>
+        {% endif %}
+    {% endfor %}
+</ul>
                 </div>
             </form>
             <!-- Sección plegable con Alpine.js -->
