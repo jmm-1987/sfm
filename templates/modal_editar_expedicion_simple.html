@@ -198,34 +198,62 @@
                 </div>
 
                 <!-- Agencias - Visible siempre pero comprimido -->
-                <div class="bg-gray-100 p-3 rounded-lg col-span-2">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-md font-semibold text-blue-600">Agencias</h3>
-                        <div class="flex space-x-4">
-                            <label class="inline-flex items-center">
-                                <span class="mr-2 text-sm">Origen:</span>
-                                <select name="agencia_origen" class="p-1 border rounded text-sm" required>
-                                    {% for agencia in agencias %}
-                                        <option value="{{ agencia }}" {% if agencia == expedicion.agencia_origen %} selected {% endif %}>
-                                            {{ agencia }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <span class="mr-2 text-sm">Destino:</span>
-                                <select name="agencia_destino" class="p-1 border rounded text-sm" required>
-                                    {% for agencia in agencias %}
-                                        <option value="{{ agencia }}" {% if agencia == expedicion.agencia_destino %} selected {% endif %}>
-                                            {{ agencia }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </label>
-                        </div>
-                    </div>
+                <!-- Agencias y Subida de Archivos -->
+<div class="bg-gray-100 p-3 rounded-lg col-span-2">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+
+        <!-- 📁 Columna Izquierda - Subida de Documentos -->
+
+
+
+            <!-- Listado de documentos existentes -->
+            {% for doc in expedicion.documentos %}
+                <div class="flex justify-between items-center mt-2 bg-white p-2 rounded shadow-sm">
+                    <a href="{{ url_for('ver_documento_expedicion', nombre_archivo=doc.nombre_archivo) }}" target="_blank" class="text-blue-600 hover:underline text-sm">
+                        📄 {{ doc.nombre_archivo }}
+                    </a>
+                    <form action="{{ url_for('eliminar_documento_expedicion') }}" method="POST" onsubmit="return confirm('¿Eliminar este documento?');">
+                        <input type="hidden" name="documento_id" value="{{ doc.id }}">
+                        <button type="submit" class="text-red-500 text-sm ml-2 hover:text-red-700">🗑️</button>
+                    </form>
                 </div>
-            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 🚚 Columna Derecha - Agencias -->
+        <div>
+    <h3 class="text-md font-semibold text-blue-600 mb-2">Agencias</h3>
+    <div class="flex gap-4">
+        <!-- Origen -->
+        <label class="flex items-center text-sm w-1/2">
+            <span class="mr-2 whitespace-nowrap">Origen:</span>
+            <select name="agencia_origen" class="p-1 border rounded text-sm w-full" required>
+                {% for agencia in agencias %}
+                    <option value="{{ agencia }}" {% if agencia == expedicion.agencia_origen %} selected {% endif %}>
+                        {{ agencia }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <!-- Destino -->
+        <label class="flex items-center text-sm w-1/2">
+            <span class="mr-2 whitespace-nowrap">Destino:</span>
+            <select name="agencia_destino" class="p-1 border rounded text-sm w-full" required>
+                {% for agencia in agencias %}
+                    <option value="{{ agencia }}" {% if agencia == expedicion.agencia_destino %} selected {% endif %}>
+                        {{ agencia }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+    </div>
+</div>
+
+    </div>
+</div>
+
+
 
             <!-- Botoneds -->
             <div class="flex justify-end mt-4">
@@ -255,6 +283,32 @@
                             </button>
                         </form>
                 </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+
+        <!-- 📁 Columna Izquierda - Subida de Documentos -->
+        <div>
+            <h3 class="text-md font-semibold text-blue-600 mb-2">Documentos</h3>
+            <form action="{{ url_for('subir_doc_expedicion') }}" method="POST" enctype="multipart/form-data" class="space-y-2">
+                <input type="hidden" name="expedicion_id" value="{{ expedicion.id }}">
+                <input type="file" name="documento" accept=".pdf,.jpg,.jpeg,.png" required class="text-sm block w-full text-gray-700">
+                <button type="submit" class="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 transition text-sm">
+                    Subir Archivo
+                </button>
+            </form>
+
+            <!-- Listado de documentos existentes -->
+            {% for doc in expedicion.documentos %}
+                <div class="flex justify-between items-center mt-2 bg-white p-2 rounded shadow-sm">
+                    <a href="{{ url_for('ver_documento_expedicion', nombre_archivo=doc.nombre_archivo) }}" target="_blank" class="text-blue-600 hover:underline text-sm">
+                        📄 {{ doc.nombre_archivo }}
+                    </a>
+                    <form action="{{ url_for('eliminar_documento_expedicion') }}" method="POST" onsubmit="return confirm('¿Eliminar este documento?');">
+                        <input type="hidden" name="documento_id" value="{{ doc.id }}">
+                        <button type="submit" class="text-red-500 text-sm ml-2 hover:text-red-700">🗑️</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 </div>

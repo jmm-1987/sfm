@@ -26,6 +26,7 @@ from metodos.desasignar_expedicion import ruta_desasignar_expedicion
 from metodos.grabar_chofer import ruta_grabar_chofer
 from metodos.editar_chofer import ruta_editar_chofer
 from metodos.subir_doc_vehiculo import ruta_subir_documento
+from metodos.subir_doc_expedicion import ruta_subir_documento_expedicion
 
 
 # Configuración de la app Flask
@@ -61,6 +62,7 @@ ruta_eliminar_expedicion(app)
 ruta_grabar_chofer(app)
 ruta_editar_chofer(app)
 ruta_subir_documento(app)
+ruta_subir_documento_expedicion(app)
 
 
 
