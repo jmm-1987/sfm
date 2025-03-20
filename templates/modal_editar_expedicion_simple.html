@@ -264,26 +264,6 @@
                 </div>
             </div>
         </form>
-        <div class="flex justify-between mt-4">
-                <div>
-                    {% if expedicion.estado == "en reparto" %}
-                        <form method="POST" action="{{ url_for('desasignar_expedicion') }}" class="inline ml-2">
-                            <input type="hidden" name="expedicion_id" value="{{ expedicion.id }}">
-                            <input type="hidden" name="control" value="simple">
-                            <button type="submit" class="bg-orange-600 text-white px-4 py-1 rounded hover:bg-orange-700 transition text-sm">
-                                Quitar de reparto
-                            </button>
-                        </form>
-                    {% endif %}
-                        <form method="POST" action="{{ url_for('eliminar_expedicion') }}" class="inline ml-2">
-                            <input type="hidden" name="expedicion_id" value="{{ expedicion.id }}">
-                            <input type="hidden" name="control" value="simple">
-                            <button type="submit" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 transition text-sm">
-                                Eliminar
-                            </button>
-                        </form>
-                </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
 
         <!-- 📁 Columna Izquierda - Subida de Documentos -->
         <div>
@@ -297,7 +277,7 @@
             </form>
 
             <!-- Listado de documentos existentes -->
-            {% for doc in expedicion.documentos %}
+            {% for doc in expedicion_doc %}
                 <div class="flex justify-between items-center mt-2 bg-white p-2 rounded shadow-sm">
                     <a href="{{ url_for('ver_documento_expedicion', nombre_archivo=doc.nombre_archivo) }}" target="_blank" class="text-blue-600 hover:underline text-sm">
                         📄 {{ doc.nombre_archivo }}
@@ -309,7 +289,35 @@
                 </div>
             {% endfor %}
         </div>
+
+<!-- Botones de acción debajo de los documentos, alineados a la derecha -->
+<div x-data="{ open: false }" class="mt-4 flex flex-col items-end">
+    <button @click="open = !open" type="button" class="text-sm text-blue-600 hover:underline mb-2">
+        <span x-show="!open">➕ Opciones especiales</span>
+        <span x-show="open">➖ Ocultar opciones especiales</span>
+    </button>
+
+    <div x-show="open" x-transition class="flex space-x-4">
+        {% if expedicion.estado == "en reparto" %}
+            <form method="POST" action="{{ url_for('desasignar_expedicion') }}" class="inline">
+                <input type="hidden" name="expedicion_id" value="{{ expedicion.id }}">
+                <input type="hidden" name="control" value="simple">
+                <button type="submit" class="bg-orange-600 text-white px-4 py-1 rounded hover:bg-orange-700 transition text-sm">
+                    Quitar de reparto
+                </button>
+            </form>
+        {% endif %}
+        <form method="POST" action="{{ url_for('eliminar_expedicion') }}" class="inline" onsubmit="return confirm('¿Eliminar expedicion?');">
+            <input type="hidden" name="expedicion_id" value="{{ expedicion.id }}">
+            <input type="hidden" name="control" value="simple">
+            <button type="submit" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 transition text-sm">
+                Eliminar
+            </button>
+        </form>
     </div>
+</div>
+
+
 </div>
 </div>
 <script>

@@ -3,7 +3,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 import db
 import os
 from datetime import date, datetime
-from models import User, Expedicion, Cliente, Chofer, Vehiculo, DocumentoVehiculo
+from models import User, Expedicion, Cliente, Chofer, Vehiculo, DocumentoVehiculo, DocumentoExpedicion
 from metodos.grabar_expedicion import ruta_grabar_expedidion
 from metodos.grabar_cliente import ruta_grabar_cliente
 from metodos.grabar_vehiculo import ruta_grabar_vehiculo
@@ -166,10 +166,11 @@ def repartos():
     expedicion = get_expedicion_by_id(expedicion_id) if expedicion_id else None
     expediciones = db.session.query(Expedicion).filter(Expedicion.estado != "entregado").order_by(Expedicion.fecha.desc()).all()
     fecha_actual = date.today().strftime('%Y-%m-%d')
+    expedicion_doc = db.session.query(DocumentoExpedicion).filter(DocumentoExpedicion.numero == expedicion_id).all()
 
     return render_template("repartos.html", expediciones=expediciones, clientes=clientes,
                            choferes=choferes, expedicion=expedicion, agencias=agencias, fecha_actual=fecha_actual,
-                           tipo_bulto=tipo_bulto)
+                           tipo_bulto=tipo_bulto, expedicion_doc=expedicion_doc)
 
 @app.route('/impresion_listados_reparto')
 @login_required
